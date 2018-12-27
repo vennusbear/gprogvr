@@ -15,6 +15,8 @@ public class AIController : MonoBehaviour
     private int prevPoint;
     private float linkCD;
 
+    public Transform eyeTarget;
+
     #region //AI 
     public enum BehaviourState { Idle, Patrol, Spy, Run, Steal, Escape, Die}
     [Header("AI Settings")]
@@ -28,6 +30,10 @@ public class AIController : MonoBehaviour
     public Animator thiefAnim;
     #endregion
 
+    #region //Head
+    public HeadLookController headScript;
+    #endregion
+
     Coroutine currentCoroutine; //coroutine that is currently running.
 
     //public AnimationCurve curve = new AnimationCurve();
@@ -35,6 +41,7 @@ public class AIController : MonoBehaviour
     IEnumerator Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        headScript = GetComponent<HeadLookController>();
         agent = GetComponent<NavMeshAgent>();
         col = GetComponent<SphereCollider>();
         agent.autoTraverseOffMeshLink = false;
@@ -54,6 +61,35 @@ public class AIController : MonoBehaviour
 
     void Update()
     {
+        switch (currentBehaviour)
+        {
+            case BehaviourState.Idle:
+                headScript.target = currentTarget;
+                break;
+
+            case BehaviourState.Run:
+                headScript.target = currentTarget;
+                break;
+
+            case BehaviourState.Patrol:
+                if (agent.remainingDistance > 3f)
+                {
+                    headScript.target = points[destPoint + 1].position;
+                }
+                else
+                {
+                    headScript.target = eyeTarget.position;
+                }
+                break;
+
+            case BehaviourState.Spy:
+                headScript.target = eyeTarget.position;
+                break;
+
+            default:
+                headScript.target = eyeTarget.position;
+                break;
+        }
     }
 
     IEnumerator PatrolState()
@@ -113,7 +149,7 @@ public class AIController : MonoBehaviour
             normalizedTime += Time.deltaTime / 0.5f;
             yield return new WaitForEndOfFrame();
         }
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         currentCoroutine = StartCoroutine(PatrolState());
     }
 
@@ -121,8 +157,8 @@ public class AIController : MonoBehaviour
     {
         currentBehaviour = BehaviourState.Run;
         agent.autoBraking = true;
-        agent.stoppingDistance = 1.5f;
-        agent.speed = 4;
+        agent.stoppingDistance = 1f;
+        agent.speed = 3.5f;
         agent.angularSpeed = 500;
         thiefAnim.SetFloat("Speed_f", agent.speed);
         while (currentBehaviour == BehaviourState.Run)
@@ -170,6 +206,7 @@ public class AIController : MonoBehaviour
         Vector3 startPos = target.transform.position;
         target.GetComponent<BoxCollider>().enabled = false;
         float normalizedTime = 0;
+        thiefAnim.SetTrigger("Pick");
         while (normalizedTime < 1.0f)
         {
             target.transform.position = Vector3.Lerp(startPos, transform.position, normalizedTime);
@@ -181,7 +218,7 @@ public class AIController : MonoBehaviour
         target.SetActive(false);
         currentTarget = escapePoint.position;
         agent.SetDestination(currentTarget);
-        agent.speed = 5;
+        agent.speed = 3.5f;
         agent.angularSpeed = 500;
         agent.stoppingDistance = 0;
         thiefAnim.SetFloat("Speed_f", agent.speed);
@@ -191,6 +228,9 @@ public class AIController : MonoBehaviour
             distanceTarget = agent.remainingDistance;
             yield return null;
         }
+
+        //Destroy(target);
+        //currentCoroutine = StartCoroutine(PatrolState());
     }
 
     IEnumerator Parabola(NavMeshAgent agent, float height, float duration)
@@ -209,6 +249,21 @@ public class AIController : MonoBehaviour
             agent.transform.position = Vector3.Lerp(startPos, endPos, normalizedTime) + yOffset * Vector3.up;
             normalizedTime += Time.deltaTime / duration;
             yield return null;
+        }
+    }
+
+    IEnumerator TargetSpotted(Collider other)
+    {
+        yield return new WaitForSeconds(1);
+        if (other.gameObject != null)
+        {
+            currentTarget = other.gameObject.transform.position;
+            if (currentCoroutine != null)
+            {
+                StopCoroutine(currentCoroutine);
+                currentCoroutine = null;
+            }
+            currentCoroutine = StartCoroutine(RunState(other.gameObject));
         }
     }
 
@@ -231,14 +286,15 @@ public class AIController : MonoBehaviour
                         {
                             if (hit.collider.gameObject == other.gameObject)
                             {
-                                currentTarget = other.gameObject.transform.position;
-                                if (currentCoroutine != null)
-                                {
-                                    StopCoroutine(currentCoroutine);
-                                    currentCoroutine = null;
-                                }
+                                StartCoroutine(TargetSpotted(other));
+                                //currentTarget = other.gameObject.transform.position;
+                                //if (currentCoroutine != null)
+                                //{
+                                //    StopCoroutine(currentCoroutine);
+                                //    currentCoroutine = null;
+                                //}
 
-                                currentCoroutine = StartCoroutine(RunState(other.gameObject));
+                                //currentCoroutine = StartCoroutine(RunState(other.gameObject));
                             }
                         }
                     }
@@ -249,7 +305,7 @@ public class AIController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponent<Rigidbody>().velocity.sqrMagnitude > 8f)
+        if (collision.gameObject.GetComponent<Rigidbody>().velocity.sqrMagnitude > 0.5f)
         {
             if (currentCoroutine != null)
             {

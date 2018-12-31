@@ -16,6 +16,8 @@ public class AIController : MonoBehaviour
     private int prevPoint;
     private float linkCD;
 
+    Coroutine currentCoroutine; //coroutine that is currently running.
+
     public Transform eyeTarget;
 
     #region //AI 
@@ -35,11 +37,14 @@ public class AIController : MonoBehaviour
     public HeadLookController headScript;
     #endregion
 
-    Coroutine currentCoroutine; //coroutine that is currently running.
+    #region //GameManager
+    GameController gameManager;
+    #endregion
 
     private void Awake()
     {
         AssignDestinationPoints();
+        gameManager = FindObjectOfType<GameController>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         headScript = GetComponent<HeadLookController>();
         agent = GetComponent<NavMeshAgent>();

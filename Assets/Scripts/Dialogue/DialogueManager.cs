@@ -7,8 +7,6 @@ public class DialogueManager : MonoBehaviour {
 
     public TextMeshPro nameText;
     public TextMeshPro dialogueText;
-
-
     private Queue<string> sentences;
 
     // Use this for initialization

@@ -13,14 +13,11 @@ public class DialogueTrigger : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            TriggerDialogue();
-        }
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            FindObjectOfType<DialogueManager>().DisplayNextSentence();
-        }
+    }
+
+    public void NextSentence()
+    {
+        FindObjectOfType<DialogueManager>().DisplayNextSentence();
     }
 }

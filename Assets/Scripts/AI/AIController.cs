@@ -53,7 +53,7 @@ public class AIController : MonoBehaviour
     }
 
     IEnumerator Start()
-    {      
+    { 
         currentCoroutine = StartCoroutine(PatrolState());
         while (true)
         {
@@ -88,17 +88,6 @@ public class AIController : MonoBehaviour
 
             case BehaviourState.Run:
                 headScript.target = currentTarget;
-                break;
-
-            case BehaviourState.Patrol:
-                if (agent.remainingDistance > 3f)
-                {
-                    headScript.target = points[destPoint + 1].position;
-                }
-                else
-                {
-                    headScript.target = eyeTarget.position;
-                }
                 break;
 
             case BehaviourState.Spy:

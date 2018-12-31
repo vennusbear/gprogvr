@@ -16,63 +16,57 @@ public class FridgeController : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        isChecking = true;
         pizza = pizzaDrop.highlightObjectPrefab;
-        StartCoroutine(Delay(1));
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 		
 	}
 
-    public void BeginCheckRot()
-    {
-        if (!isChecking)
-        {
-            checkRoutine = StartCoroutine(CheckRot());
-        }
-    }
+    //public void BeginCheckRot()
+    //{
+    //    if (!isChecking)
+    //    {
+    //        checkRoutine = StartCoroutine(CheckRot());
+    //    }
+    //}
 
-    public void StopCheckRot()
-    {
-        if (checkRoutine != null)
-        {
-            StopCoroutine(checkRoutine);
-            isChecking = false;
-            checkRoutine = null;
-        }
-    }
+    //public void StopCheckRot()
+    //{
+    //    if (checkRoutine != null)
+    //    {
+    //        StopCoroutine(checkRoutine);
+    //        isChecking = false;
+    //        checkRoutine = null;
+    //    }
+    //}
 
-    IEnumerator CheckRot()
-    {
-        isChecking = true;
-        float doorRot = 0;
-        while (true)
-        {
-            doorRot = fridgeDoor.GetNormalizedValue();
-            if (doorRot >= 0.9)
-            {
-                SpawnFood(pizza);
-                break;
-            }
-            yield return new WaitForEndOfFrame();
-        }
+    //IEnumerator CheckRot()
+    //{
+    //    isChecking = true;
+    //    float doorRot = 0;
+    //    while (true)
+    //    {
+    //        doorRot = fridgeDoor.GetNormalizedValue();
+    //        if (doorRot >= 0.9)
+    //        {
+    //            SpawnFood();
+    //            break;
+    //        }
+    //        yield return new WaitForEndOfFrame();
+    //    }
 
-        checkRoutine = null;
-    }
+    //    checkRoutine = null;
+    //}
     
-    void SpawnFood(GameObject food)
+    public void SpawnFood()
     {
-        GameObject pizzaClone = Instantiate(pizza, pizzaDrop.transform);
-        pizzaDrop.ForceSnap(pizzaClone);
-        isChecking = false;
+        if (pizzaDrop.GetCurrentSnappedObject() == null)
+        {
+            GameObject pizzaClone = Instantiate(pizza, pizzaDrop.transform);
+            pizzaDrop.ForceSnap(pizzaClone);
+        }
     }
-
-    IEnumerator Delay(int seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        isChecking = false;
-    } //To overcome the weird bug that causes the buttons to be pushed at the start of the scene 
-
 }

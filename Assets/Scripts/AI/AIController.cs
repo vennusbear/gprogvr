@@ -9,7 +9,8 @@ public class AIController : MonoBehaviour
     public Vector3 currentTarget;
     float distanceTarget;
 
-    public Transform[] points;
+    public Transform pointParent;
+    private Transform[] points;
     public Transform escapePoint;
     private int destPoint = 0;
     private int prevPoint;
@@ -36,19 +37,22 @@ public class AIController : MonoBehaviour
 
     Coroutine currentCoroutine; //coroutine that is currently running.
 
-    //public AnimationCurve curve = new AnimationCurve();
-
-    IEnumerator Start()
+    private void Awake()
     {
+        AssignDestinationPoints();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         headScript = GetComponent<HeadLookController>();
         agent = GetComponent<NavMeshAgent>();
         col = GetComponent<SphereCollider>();
         agent.autoTraverseOffMeshLink = false;
+    }
+
+    IEnumerator Start()
+    {      
         currentCoroutine = StartCoroutine(PatrolState());
         while (true)
         {
-            if (agent.isOnOffMeshLink && linkCD >= 3)
+            if (agent.isOnOffMeshLink && linkCD >= 1.5f)
             {              
                 yield return StartCoroutine(Parabola(agent, 1.5f, 1.2f));
                 agent.CompleteOffMeshLink();
@@ -56,6 +60,16 @@ public class AIController : MonoBehaviour
             }
             linkCD += Time.deltaTime;
             yield return null;
+        }
+    }
+
+    void AssignDestinationPoints()
+    {
+        points = new Transform[pointParent.childCount];
+
+        for( int i = 0; i < points.Length; i ++)
+        {
+            points[i] = pointParent.GetChild(i);
         }
     }
 
@@ -183,7 +197,7 @@ public class AIController : MonoBehaviour
         distanceTarget = agent.remainingDistance;
         agent.SetDestination(currentTarget);
         float elapsedTime = 0;
-        while (distanceTarget <= agent.stoppingDistance)
+        while (distanceTarget <= agent.stoppingDistance && currentBehaviour == BehaviourState.Idle)
         {
             currentTarget = target.transform.position;
             agent.SetDestination(currentTarget);
@@ -194,6 +208,7 @@ public class AIController : MonoBehaviour
                 StartCoroutine(EscapeState(target));
                 StopCoroutine(currentCoroutine);
             }
+
             yield return null;
         }
 
@@ -216,21 +231,29 @@ public class AIController : MonoBehaviour
 
         target.transform.parent = transform;
         target.SetActive(false);
-        currentTarget = escapePoint.position;
-        agent.SetDestination(currentTarget);
+        agent.SetDestination(escapePoint.position);
+        distanceTarget = agent.remainingDistance;
+        print(distanceTarget);
         agent.speed = 3.5f;
         agent.angularSpeed = 500;
         agent.stoppingDistance = 0;
         thiefAnim.SetFloat("Speed_f", agent.speed);
-        while (distanceTarget <= agent.stoppingDistance)
+        while (currentBehaviour == BehaviourState.Escape)
         {
-            agent.SetDestination(currentTarget);
             distanceTarget = agent.remainingDistance;
+            print(distanceTarget);
+            if (agent.pathPending)
+            {
+                yield return null;
+            }
+
+            else if (distanceTarget <= agent.stoppingDistance)
+            {
+                currentCoroutine = StartCoroutine(PatrolState());
+            }
+
             yield return null;
         }
-
-        //Destroy(target);
-        //currentCoroutine = StartCoroutine(PatrolState());
     }
 
     IEnumerator Parabola(NavMeshAgent agent, float height, float duration)

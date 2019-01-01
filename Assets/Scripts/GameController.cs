@@ -21,8 +21,14 @@ public class GameController : MonoBehaviour {
     public TextMeshPro doorText;
     public TextMeshPro buttonText;
 
+    private ClockController clockScript;
+
     private bool clicked;
 
+    void Awake()
+    {
+        clockScript = FindObjectOfType<ClockController>();
+    }
     // Use this for initialization
     IEnumerator Start () {
         currentState = GameState.Start;

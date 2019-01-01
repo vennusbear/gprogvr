@@ -40,7 +40,7 @@ public class ThiefCarScript : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            StartCoroutine(LerpCar(startPos));
+            transform.position = new Vector3(startPos, currentPos.y, currentPos.z);
         }
     }
 

@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour {
     {
         clockScript = FindObjectOfType<ClockController>();
     }
-    // Use this for initialization
+    
     IEnumerator Start () {
         currentState = GameState.Start;
         welcomeText.enabled = true;
@@ -50,7 +50,7 @@ public class GameController : MonoBehaviour {
             StartCoroutine(TVLerpIn());
             //ButtonOut();
             StartCoroutine(TextFade(buttonText, 2));
-            StartCoroutine(GameTimer());
+            StartCoroutine(clockScript.HourMoving("default"));
         }
     }
 

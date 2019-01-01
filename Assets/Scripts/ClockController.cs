@@ -13,7 +13,7 @@ public class ClockController : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        StartCoroutine(HourMoving("default"));
+        
     }
 	
 	// Update is called once per frame

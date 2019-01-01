@@ -21,7 +21,7 @@ public class AIController : MonoBehaviour
     public Transform eyeTarget;
 
     #region //AI 
-    public enum BehaviourState { Idle, Patrol, Spy, Run, Steal, Escape, Die}
+    public enum BehaviourState { Paused, Idle, Patrol, Spy, Run, Escape, Die}
     [Header("AI Settings")]
     public BehaviourState currentBehaviour; //Used to check what state the AI is currently doing.
     NavMeshAgent agent;
@@ -52,7 +52,12 @@ public class AIController : MonoBehaviour
         agent.autoTraverseOffMeshLink = false;
     }
 
-    IEnumerator Start()
+    private void Start()
+    {
+        currentBehaviour = BehaviourState.Paused;
+    }
+
+    IEnumerator StartAI()
     { 
         currentCoroutine = StartCoroutine(PatrolState());
         while (true)

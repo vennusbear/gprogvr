@@ -9,6 +9,8 @@ public class DialogueManager : MonoBehaviour {
     public TextMeshPro dialogueText;
     private Queue<string> sentences;
 
+    public bool next;
+
     // Use this for initialization
     void Start()
     {
@@ -58,5 +60,10 @@ public class DialogueManager : MonoBehaviour {
     void EndDialogue()
     {
        
+    }
+
+    public void ButtonPressed(bool value)
+    {
+        next = value;
     }
 }

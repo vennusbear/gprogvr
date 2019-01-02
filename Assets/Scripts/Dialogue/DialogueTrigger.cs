@@ -14,7 +14,7 @@ public class DialogueTrigger : MonoBehaviour {
         dScript = _dialogueManager.GetComponent<DialogueManager>();
     }
 
-    public void TriggerDialogue()
+    void TriggerDialogue()
     {
         dScript.StartDialogue(dialogue);
     }
@@ -22,11 +22,6 @@ public class DialogueTrigger : MonoBehaviour {
     void Update()
     {
 
-    }
-
-    public void NextSentence()
-    {
-        dScript.DisplayNextSentence();
     }
 
     public IEnumerator TutorialTextScrollThrough()
@@ -37,19 +32,27 @@ public class DialogueTrigger : MonoBehaviour {
         {
             switch (i) //condition for text to proceed depending on which text is showing
             {
-                case 2:
+                case 0:
+                    dialogue.title = "Tutorial"; // title of the message, make sure to put before the actual message by 1 
+                    yield return new WaitForSeconds(3);
+                    break;
+                case 1:
+                    yield return new WaitForSeconds(5);
+                    break;
+                case 4:
                     yield return new WaitForSeconds(1);
                     yield return new WaitUntil(() => dScript.next == true);
                     break;
-                case 3:
-                    yield return new WaitForSeconds(5);
+                case 5:
+                    dialogue.title = "";
+                    yield return new WaitForSeconds(3);
                     break;
                 default:
                     yield return new WaitForSeconds(5);
                     break;
             }
 
-            NextSentence();
+            dScript.DisplayNextSentence(dialogue);
         }
     }
 }

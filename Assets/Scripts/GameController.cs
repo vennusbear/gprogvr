@@ -107,7 +107,6 @@ public class GameController : MonoBehaviour {
             yield return null;
         }
 
-        yield return new WaitForSeconds(1f);
         StartCoroutine(dTrigger.TutorialTextScrollThrough());
     }
 

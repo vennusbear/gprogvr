@@ -19,9 +19,6 @@ public class DialogueManager : MonoBehaviour {
 
     public void StartDialogue(Dialogue dialogue)
     {
-
-        nameText.text = dialogue.name;
-
         sentences.Clear();
 
         foreach (string sentence in dialogue.sentences)
@@ -29,10 +26,10 @@ public class DialogueManager : MonoBehaviour {
             sentences.Enqueue(sentence);
         }
 
-        DisplayNextSentence();
+        DisplayNextSentence(dialogue);
     }
 
-    public void DisplayNextSentence()
+    public void DisplayNextSentence(Dialogue dialogue)
     {
         if (sentences.Count == 0)
         {
@@ -42,20 +39,19 @@ public class DialogueManager : MonoBehaviour {
 
         string sentence = sentences.Dequeue();
 
+        nameText.text = dialogue.title;
         dialogueText.text = sentence;
-        //StopAllCoroutines();
-        //StartCoroutine(TypeSentence(sentence));
     }
 
-    IEnumerator TypeSentence(string sentence)
-    {
-        dialogueText.text = "";
-        foreach (char letter in sentence.ToCharArray())
-        {
-            dialogueText.text += letter;
-            yield return null;
-        }
-    }
+    //IEnumerator TypeSentence(string sentence)
+    //{
+    //    dialogueText.text = "";
+    //    foreach (char letter in sentence.ToCharArray())
+    //    {
+    //        dialogueText.text += letter;
+    //        yield return null;
+    //    }
+    //}
 
     void EndDialogue()
     {

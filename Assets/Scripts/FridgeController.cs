@@ -7,66 +7,43 @@ using VRTK.Controllables.ArtificialBased;
 public class FridgeController : MonoBehaviour {
 
     public VRTK_ArtificialRotator fridgeDoor;
-    public VRTK_SnapDropZone pizzaDrop;
-    private GameObject pizza;
-    public bool isChecking;
+    public Transform dropZoneParent;
+    public VRTK_SnapDropZone[] dropZones;
+    public GameObject[] foodItems;
+    bool ready = false;
 
     Coroutine checkRoutine;
 
     // Use this for initialization
-    void Start ()
+    IEnumerator Start()
     {
-        pizza = pizzaDrop.highlightObjectPrefab;
+        dropZones = new VRTK_SnapDropZone[dropZoneParent.childCount];
+        foodItems = new GameObject[dropZoneParent.childCount];
+
+        yield return new WaitForSeconds(3);
+        for (int i = 0; i < dropZones.Length; i++)
+        {
+            dropZones[i] = dropZoneParent.GetChild(i).GetComponent<VRTK_SnapDropZone>();
+            foodItems[i] = dropZones[i].GetCurrentSnappedObject();
+        }
+
+        ready = true;
     }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-		
-	}
 
-    //public void BeginCheckRot()
-    //{
-    //    if (!isChecking)
-    //    {
-    //        checkRoutine = StartCoroutine(CheckRot());
-    //    }
-    //}
-
-    //public void StopCheckRot()
-    //{
-    //    if (checkRoutine != null)
-    //    {
-    //        StopCoroutine(checkRoutine);
-    //        isChecking = false;
-    //        checkRoutine = null;
-    //    }
-    //}
-
-    //IEnumerator CheckRot()
-    //{
-    //    isChecking = true;
-    //    float doorRot = 0;
-    //    while (true)
-    //    {
-    //        doorRot = fridgeDoor.GetNormalizedValue();
-    //        if (doorRot >= 0.9)
-    //        {
-    //            SpawnFood();
-    //            break;
-    //        }
-    //        yield return new WaitForEndOfFrame();
-    //    }
-
-    //    checkRoutine = null;
-    //}
-    
     public void SpawnFood()
     {
-        if (pizzaDrop.GetCurrentSnappedObject() == null)
+        if (ready)
         {
-            GameObject pizzaClone = Instantiate(pizza, pizzaDrop.transform);
-            pizzaDrop.ForceSnap(pizzaClone);
+            for (int i = 0; i < dropZones.Length; i++)
+            {
+                if (dropZones[i].GetCurrentSnappedObject() == null)
+                {
+                    GameObject foodClone = Instantiate(foodItems[i], dropZones[i].transform);
+                    dropZones[i].snapDuration = 0;
+                    dropZones[i].ForceSnap(foodClone);
+                    dropZones[i].snapDuration = 0.1f;
+                }
+            }
         }
     }
 }

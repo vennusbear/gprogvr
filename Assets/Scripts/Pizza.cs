@@ -23,15 +23,10 @@ public class Pizza : MonoBehaviour {
 	void Start ()
     {
         VRTKpizza = GetComponent<VRTK_InteractableObject>();
-    }
-	
-	// Update is called once per frame
-	void Update () {
-	}
-
-    void OnTriggerEnter(Collider collision)
-    {
-
+        if (currentState == FoodState.Raw)
+        {
+            //gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
+        }
     }
 
     void OnTriggerExit(Collider collision)

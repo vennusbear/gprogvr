@@ -11,8 +11,8 @@ public class GameController : MonoBehaviour {
     public float gameTime;
 
     public GameObject TVObject;
-    private Vector3 butPos;
-    public GameObject TVButton;
+    //private Vector3 butPos;
+    //public GameObject TVButton;
     private Vector3 tvPos;
 
     public GameObject ButtonObject;
@@ -40,8 +40,8 @@ public class GameController : MonoBehaviour {
         dTrigger = GetComponent<DialogueTrigger>();
         tvPos = TVObject.transform.position;
         TVObject.transform.position = new Vector3(TVObject.transform.position.x, TVObject.transform.position.y - 1, TVObject.transform.position.z);
-        butPos = TVButton.transform.position;
-        TVButton.transform.position = new Vector3(TVButton.transform.position.x, TVButton.transform.position.y - 0.1f, TVButton.transform.position.z);
+        //butPos = TVButton.transform.position;
+        //TVButton.transform.position = new Vector3(TVButton.transform.position.x, TVButton.transform.position.y - 0.1f, TVButton.transform.position.z);
         yield return new WaitForSeconds(5f);
         StartCoroutine(TextFade(welcomeText, 1));
 	}
@@ -96,16 +96,16 @@ public class GameController : MonoBehaviour {
             yield return null;
         }
 
-        currentPos = TVButton.transform.position;
-        targetPos = butPos;
-        TVButton.SetActive(true);
-        normalizedTime = 0;
-        while (normalizedTime < 1)
-        {
-            TVButton.transform.position = Vector3.Slerp(currentPos, targetPos, normalizedTime);
-            normalizedTime += Time.deltaTime * 1.5f;
-            yield return null;
-        }
+        //currentPos = TVButton.transform.position;
+        //targetPos = butPos;
+        //TVButton.SetActive(true);
+        //normalizedTime = 0;
+        //while (normalizedTime < 1)
+        //{
+        //    TVButton.transform.position = Vector3.Slerp(currentPos, targetPos, normalizedTime);
+        //    normalizedTime += Time.deltaTime * 1.5f;
+        //    yield return null;
+        //}
 
         StartCoroutine(dTrigger.TutorialTextScrollThrough());
     }

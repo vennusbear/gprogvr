@@ -57,9 +57,4 @@ public class DialogueManager : MonoBehaviour {
     {
        
     }
-
-    public void ButtonPressed(bool value)
-    {
-        next = value;
-    }
 }

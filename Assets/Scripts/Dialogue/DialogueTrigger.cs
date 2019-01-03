@@ -7,6 +7,7 @@ public class DialogueTrigger : MonoBehaviour {
     public Dialogue dialogue;
     private GameObject _dialogueManager;
     private DialogueManager dScript;
+    bool d4;
 
     private void Start()
     {
@@ -41,7 +42,8 @@ public class DialogueTrigger : MonoBehaviour {
                     break;
                 case 4:
                     yield return new WaitForSeconds(1);
-                    yield return new WaitUntil(() => dScript.next == true);
+                    //d4 = false;
+                    yield return new WaitUntil(() => d4 == true);
                     break;
                 case 5:
                     dialogue.title = "";
@@ -54,5 +56,10 @@ public class DialogueTrigger : MonoBehaviour {
 
             dScript.DisplayNextSentence(dialogue);
         }
+    }
+
+    public void DialogueFourNext(bool pressed)
+    {
+        d4 = pressed; 
     }
 }

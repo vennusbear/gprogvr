@@ -8,8 +8,6 @@ public class GameController : MonoBehaviour {
     public enum GameState { Start, Play, End }
     public GameState currentState;
 
-    public float gameTime;
-
     public GameObject TVObject;
     //private Vector3 butPos;
     //public GameObject TVButton;
@@ -40,8 +38,6 @@ public class GameController : MonoBehaviour {
         dTrigger = GetComponent<DialogueTrigger>();
         tvPos = TVObject.transform.position;
         TVObject.transform.position = new Vector3(TVObject.transform.position.x, TVObject.transform.position.y - 1, TVObject.transform.position.z);
-        //butPos = TVButton.transform.position;
-        //TVButton.transform.position = new Vector3(TVButton.transform.position.x, TVButton.transform.position.y - 0.1f, TVButton.transform.position.z);
         yield return new WaitForSeconds(5f);
         StartCoroutine(TextFade(welcomeText, 1));
 	}
@@ -55,15 +51,6 @@ public class GameController : MonoBehaviour {
             ButtonOut();
             StartCoroutine(TextFade(buttonText, 2));
             StartCoroutine(clockScript.HourMoving("default"));
-        }
-    }
-
-    IEnumerator GameTimer()
-    {
-        while (currentState == GameState.Play)
-        {
-            gameTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
         }
     }
 	
@@ -96,52 +83,19 @@ public class GameController : MonoBehaviour {
             yield return null;
         }
 
-        //currentPos = TVButton.transform.position;
-        //targetPos = butPos;
-        //TVButton.SetActive(true);
-        //normalizedTime = 0;
-        //while (normalizedTime < 1)
-        //{
-        //    TVButton.transform.position = Vector3.Slerp(currentPos, targetPos, normalizedTime);
-        //    normalizedTime += Time.deltaTime * 1.5f;
-        //    yield return null;
-        //}
-
         StartCoroutine(dTrigger.TutorialTextScrollThrough());
     }
-
-    //IEnumerator TutorialTextScrollThrough()
-    //{
-    //    dTrigger.TriggerDialogue();
-
-    //    for (int i = 0; i < dTrigger.dialogue.sentences.Length - 1; i++)
-    //    {
-    //        print(i);
-    //        switch (i) //condition for text to proceed depending on which text is showing
-    //        {
-    //            case 2:
-    //                yield return new WaitForSeconds(1);
-    //                yield return new WaitUntil(() => clicked == true);
-    //                break;
-    //            case 3:
-    //                yield return new WaitForSeconds(5);
-    //                break;
-    //            default:
-    //                yield return new WaitForSeconds(5);
-    //                break;
-    //        }
-
-    //        dTrigger.NextSentence();
-    //    }
-    //}
 
     void ButtonOut()
     {
         ButtonObject.SetActive(false);
     }
 
-    //public void ButtonPressed(bool value)
-    //{
-    //    clicked = value;
-    //}
+    public void DoorTextFade()
+    {
+        if (doorText.color != new Color(1, 1, 1, 0))
+        {
+            StartCoroutine(TextFade(doorText, 1));
+        }
+    }
 }

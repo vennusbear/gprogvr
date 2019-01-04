@@ -20,6 +20,8 @@ public class DialogueManager : MonoBehaviour {
     public void StartDialogue(Dialogue dialogue)
     {
         sentences.Clear();
+        nameText.enabled = true;
+        dialogueText.enabled = true;
 
         foreach (string sentence in dialogue.sentences)
         {
@@ -57,8 +59,9 @@ public class DialogueManager : MonoBehaviour {
     //    }
     //}
 
-    void EndDialogue()
+    public void EndDialogue()
     {
-       
+        nameText.enabled = false;
+        dialogueText.enabled = false;
     }
 }

@@ -9,8 +9,6 @@ public class GameController : MonoBehaviour {
     public GameState currentState;
 
     public GameObject TVObject;
-    //private Vector3 butPos;
-    //public GameObject TVButton;
     private Vector3 tvPos;
 
     public GameObject ButtonObject;
@@ -21,10 +19,9 @@ public class GameController : MonoBehaviour {
     public TextMeshPro grabText;
     public TextMeshPro doorText;
     public TextMeshPro buttonText;
+    public TextMeshPro walkText;
 
     private ClockController clockScript;
-
-    //private bool clicked;
 
     void Awake()
     {
@@ -37,6 +34,7 @@ public class GameController : MonoBehaviour {
         grabText.enabled = true;
         doorText.enabled = true;
         buttonText.enabled = true;
+        walkText.enabled = true;
         dTrigger = GetComponent<DialogueTrigger>();
         tvPos = TVObject.transform.position;
         TVObject.transform.position = new Vector3(TVObject.transform.position.x, TVObject.transform.position.y - 1, TVObject.transform.position.z);
@@ -103,6 +101,11 @@ public class GameController : MonoBehaviour {
         if (grabText.color != new Color(1, 1, 1, 0))
         {
             StartCoroutine(TextFade(grabText, 1));
+        }
+
+        if (walkText.color != new Color(1, 1, 1, 0))
+        {
+            StartCoroutine(TextFade(walkText, 1));
         }
     }
 }

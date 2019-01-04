@@ -9,7 +9,6 @@ public class DialogueTrigger : MonoBehaviour {
     private DialogueManager dScript;
     bool nextTriggered;
     Coroutine buttonRoutine;
-    Coroutine timerRoutine;
 
     void Start()
     {
@@ -17,16 +16,11 @@ public class DialogueTrigger : MonoBehaviour {
         dScript = _dialogueManager.GetComponent<DialogueManager>();
     }
 
-    void TriggerDialogue()
-    {
-        dScript.StartDialogue(dialogue);
-    }
-
     public IEnumerator TutorialTextScrollThrough()
     {
-        TriggerDialogue();
+        dScript.StartDialogue(dialogue);
 
-        for (int i = 0; i < dialogue.sentences.Length - 1; i++)
+        for (int i = 0; i < dialogue.sentences.Length; i++)
         {
             switch (i) //condition for text to proceed depending on which text is showing
             {
@@ -47,6 +41,9 @@ public class DialogueTrigger : MonoBehaviour {
                 case 7: //unskippable
                     dScript.UpdateNameText("");
                     yield return new WaitForSeconds(3f);
+                    break;
+                case 8: //end dialogue
+                    dScript.EndDialogue();
                     break;
                 default:
                     StartCoroutine(Timer(5));

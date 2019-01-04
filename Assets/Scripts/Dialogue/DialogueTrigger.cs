@@ -9,8 +9,9 @@ public class DialogueTrigger : MonoBehaviour {
     private DialogueManager dScript;
     bool nextTriggered;
     Coroutine buttonRoutine;
+    Coroutine timerRoutine;
 
-    private void Start()
+    void Start()
     {
         _dialogueManager = FindObjectOfType<DialogueManager>().gameObject;
         dScript = _dialogueManager.GetComponent<DialogueManager>();
@@ -21,11 +22,6 @@ public class DialogueTrigger : MonoBehaviour {
         dScript.StartDialogue(dialogue);
     }
 
-    void Update()
-    {
-
-    }
-
     public IEnumerator TutorialTextScrollThrough()
     {
         TriggerDialogue();
@@ -34,11 +30,12 @@ public class DialogueTrigger : MonoBehaviour {
         {
             switch (i) //condition for text to proceed depending on which text is showing
             {
-                case 0:
-                    dialogue.title = "Tutorial"; // title of the message, make sure to put before the actual message by 1 
+                case 0: //unskippable
+                    dScript.UpdateNameText("");
                     yield return new WaitForSeconds(3);
                     break;
                 case 1:
+                    dScript.UpdateNameText("Tutorial");
                     yield return new WaitForSeconds(5);
                     break;
                 case 4:
@@ -46,8 +43,8 @@ public class DialogueTrigger : MonoBehaviour {
                     nextTriggered = false;
                     yield return new WaitUntil(() => nextTriggered == true);
                     break;
-                case 5:
-                    dialogue.title = "";
+                case 6: //unskippable
+                    dScript.UpdateNameText("");
                     yield return new WaitForSeconds(3);
                     break;
                 default:
@@ -62,11 +59,16 @@ public class DialogueTrigger : MonoBehaviour {
     public void NextDialogue()
     {
         nextTriggered = true;
-        print(nextTriggered);
         if (buttonRoutine != null)
         {
             StopCoroutine(buttonRoutine);
         }
+
+        //if (timerRoutine != null)
+        //{
+        //    StopCoroutine(timerRoutine);
+        //}
+
         buttonRoutine = StartCoroutine(ButtonReleased());
     }
 
@@ -75,5 +77,10 @@ public class DialogueTrigger : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         nextTriggered = false;
         print(nextTriggered);
+    }
+
+    IEnumerator Timer(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
     }
 }

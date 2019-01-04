@@ -39,8 +39,12 @@ public class DialogueManager : MonoBehaviour {
 
         string sentence = sentences.Dequeue();
 
-        nameText.text = dialogue.title;
         dialogueText.text = sentence;
+    }
+
+    public void UpdateNameText(string title)
+    {
+        nameText.text = title;
     }
 
     //IEnumerator TypeSentence(string sentence)

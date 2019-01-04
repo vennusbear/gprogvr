@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogueTrigger : MonoBehaviour {
+public class TutorialTrigger : MonoBehaviour {
 
     public Dialogue dialogue;
     private GameObject _dialogueManager;
     private DialogueManager dScript;
+    private TVController tvScript;
     bool nextTriggered;
     Coroutine buttonRoutine;
 
     void Start()
     {
+        tvScript = GetComponent<TVController>();
         _dialogueManager = FindObjectOfType<DialogueManager>().gameObject;
         dScript = _dialogueManager.GetComponent<DialogueManager>();
     }
@@ -34,16 +36,13 @@ public class DialogueTrigger : MonoBehaviour {
                     yield return new WaitUntil(() => nextTriggered == true);
                     break;
                 case 5:
-                    yield return new WaitForSeconds(1.5f);
+                    yield return new WaitForSeconds(0.5f);
                     nextTriggered = false;
                     yield return new WaitUntil(() => nextTriggered == true);
                     break;
                 case 7: //unskippable
                     dScript.UpdateNameText("");
                     yield return new WaitForSeconds(3f);
-                    break;
-                case 8: //end dialogue
-                    dScript.EndDialogue();
                     break;
                 default:
                     StartCoroutine(Timer(5));
@@ -53,6 +52,9 @@ public class DialogueTrigger : MonoBehaviour {
 
             dScript.DisplayNextSentence(dialogue);
         }
+
+        dScript.EndDialogue();
+        tvScript.TVMainMenu();
     }
 
     public void NextDialogue()
@@ -88,7 +90,6 @@ public class DialogueTrigger : MonoBehaviour {
             time += Time.deltaTime;
             yield return null;
         }
-        print(time);
         buttonRoutine = StartCoroutine(ButtonReleased());
     }
 }

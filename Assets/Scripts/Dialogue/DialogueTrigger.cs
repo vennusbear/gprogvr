@@ -32,23 +32,25 @@ public class DialogueTrigger : MonoBehaviour {
             {
                 case 0: //unskippable
                     dScript.UpdateNameText("");
-                    yield return new WaitForSeconds(3);
+                    yield return new WaitForSeconds(3f);
                     break;
                 case 1:
                     dScript.UpdateNameText("Tutorial");
-                    yield return new WaitForSeconds(5);
+                    StartCoroutine(Timer(5));
+                    yield return new WaitUntil(() => nextTriggered == true);
                     break;
-                case 4:
+                case 5:
                     yield return new WaitForSeconds(1.5f);
                     nextTriggered = false;
                     yield return new WaitUntil(() => nextTriggered == true);
                     break;
-                case 6: //unskippable
+                case 7: //unskippable
                     dScript.UpdateNameText("");
-                    yield return new WaitForSeconds(3);
+                    yield return new WaitForSeconds(3f);
                     break;
                 default:
-                    yield return new WaitForSeconds(5);
+                    StartCoroutine(Timer(5));
+                    yield return new WaitUntil(() => nextTriggered == true);
                     break;
             }
 
@@ -59,28 +61,37 @@ public class DialogueTrigger : MonoBehaviour {
     public void NextDialogue()
     {
         nextTriggered = true;
+       
         if (buttonRoutine != null)
         {
             StopCoroutine(buttonRoutine);
         }
-
-        //if (timerRoutine != null)
-        //{
-        //    StopCoroutine(timerRoutine);
-        //}
 
         buttonRoutine = StartCoroutine(ButtonReleased());
     }
 
     IEnumerator ButtonReleased()
     {
-        yield return new WaitForEndOfFrame();
+        yield return null;
         nextTriggered = false;
-        print(nextTriggered);
     }
 
     IEnumerator Timer(float seconds)
     {
-        yield return new WaitForSeconds(seconds);
+        nextTriggered = false;
+        float time = 0;
+        while (!nextTriggered)
+        {
+            if (time >= seconds)
+            {
+                nextTriggered = true;
+                break;
+            }
+
+            time += Time.deltaTime;
+            yield return null;
+        }
+        print(time);
+        buttonRoutine = StartCoroutine(ButtonReleased());
     }
 }

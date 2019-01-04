@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour {
     private DialogueTrigger dTrigger;
 
     public TextMeshPro welcomeText;
+    public TextMeshPro grabText;
     public TextMeshPro doorText;
     public TextMeshPro buttonText;
 
@@ -33,6 +34,7 @@ public class GameController : MonoBehaviour {
     IEnumerator Start () {
         currentState = GameState.Start;
         welcomeText.enabled = true;
+        grabText.enabled = true;
         doorText.enabled = true;
         buttonText.enabled = true;
         dTrigger = GetComponent<DialogueTrigger>();
@@ -96,6 +98,11 @@ public class GameController : MonoBehaviour {
         if (doorText.color != new Color(1, 1, 1, 0))
         {
             StartCoroutine(TextFade(doorText, 1));
+        }
+
+        if (grabText.color != new Color(1, 1, 1, 0))
+        {
+            StartCoroutine(TextFade(grabText, 1));
         }
     }
 }

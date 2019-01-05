@@ -61,6 +61,8 @@ public class DialogueManager : MonoBehaviour {
 
     public void EndDialogue()
     {
+        nameText.text = "";
+        dialogueText.text = "";
         nameText.enabled = false;
         dialogueText.enabled = false;
     }

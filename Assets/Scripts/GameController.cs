@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System.Linq;
+using TMPro;
 
 public class GameController : MonoBehaviour {
 
@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour {
     public GameState currentState;
 
     public int level = 1;
-    public List<FoodGoal> goalItems;
+    public List<GameObject> goalItems;
     private List<GameObject> allItems;
 
     [SerializeField] private TextMeshPro welcomeText;
@@ -55,10 +55,8 @@ public class GameController : MonoBehaviour {
         switch (level)
         {
             case 1:
-                FoodGoal item = new FoodGoal(allItems.Where(obj => obj.name == "Milk").SingleOrDefault().name, "carton of");
-                FoodGoal item2 = new FoodGoal(allItems.Where(obj => obj.name == "Pizza").SingleOrDefault().name, "reheated");
-                goalItems.Add(item);
-                goalItems.Add(item2);
+                goalItems.Add(allItems.Where(obj => obj.name == "Pizza").SingleOrDefault());
+                goalItems.Add(allItems.Where(obj => obj.name == "Milk").SingleOrDefault());
                 break;
             case 2:
                 break;

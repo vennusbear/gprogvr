@@ -9,14 +9,4 @@ public class Dialogue {
 
     [TextArea(3, 10)]
     public string[] sentences;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

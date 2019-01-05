@@ -11,6 +11,7 @@ public class TVController : MonoBehaviour {
 
     [SerializeField] private GameObject list;
     [SerializeField] private GameObject listTemplate;
+    [SerializeField] private List<FoodGoal> goalItemsName;
 
     private DialogueManager dScript;
 
@@ -35,20 +36,44 @@ public class TVController : MonoBehaviour {
 
     void LoadTaskMenu()
     {
+        ConvertGameObjectToFoodGoal();
         dScript.nameText.enabled = true;
         dScript.UpdateNameText("Tasks");
         SwitchButtons(list, true);
-        listTemplate.GetComponent<TextMeshProUGUI>().text = 1 + "." + "<indent=10%>Serve a "+ gameScript.goalItems[0].prefix + " <i>" + gameScript.goalItems[0].foodName + "</i>";
+        listTemplate.GetComponent<TextMeshProUGUI>().text = "1" +"." + "<indent=10%>Serve a " + goalItemsName[0].prefix + " <b>" + goalItemsName[0].foodName + "</b>";
 
-        if (gameScript.goalItems.Count > 1)
+        if (goalItemsName.Count > 1)
         {
-            for (int i = 1; i < gameScript.goalItems.Count; i++)
+            for (int i = 1; i < goalItemsName.Count; i++)
             {
                 GameObject list = Instantiate(listTemplate) as GameObject;
                 list.SetActive(true);
-                list.GetComponent<TextMeshProUGUI>().text = i + 1 + "." + "<indent=10%>Serve a " + gameScript.goalItems[i].prefix + " <i>" + gameScript.goalItems[i].foodName + "</i>";
+                list.GetComponent<TextMeshProUGUI>().text = i + 1 + "." + "<indent=10%>Serve a " + goalItemsName[i].prefix + " <b>" + goalItemsName[i].foodName + "</b>";
                 list.transform.SetParent(listTemplate.transform.parent, false);
             }
+        }
+    }
+
+    void ConvertGameObjectToFoodGoal()
+    {
+        string prefix;
+        for (int i = 0; i < gameScript.goalItems.Count; i++)
+        {
+            switch (gameScript.goalItems[i].name)
+            {
+                case "Pizza":
+                    prefix = "reheated";
+                    break;
+                case "Milk":
+                    prefix = "carton of";
+                    break;
+                default:
+                    prefix = "";
+                    break;
+            }
+
+            FoodGoal food = new FoodGoal(gameScript.goalItems[i].name, prefix);
+            goalItemsName.Add(food);
         }
     }
 

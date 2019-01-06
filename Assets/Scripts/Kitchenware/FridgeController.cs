@@ -7,8 +7,8 @@ using VRTK.Controllables.ArtificialBased;
 public class FridgeController : MonoBehaviour {
 
     public VRTK_ArtificialRotator fridgeDoor;
-    public Transform dropZoneParent;
-    public VRTK_SnapDropZone[] dropZones;
+    public Transform[] dropZoneParent;
+    public List<VRTK_SnapDropZone> dropZones;
     public List<GameObject> foodItems = new List<GameObject>();
     bool ready = false;
 
@@ -17,16 +17,20 @@ public class FridgeController : MonoBehaviour {
     // Use this for initialization
     IEnumerator Start()
     {
-        dropZones = new VRTK_SnapDropZone[dropZoneParent.childCount];
 
-        for (int i = 0; i < dropZones.Length; i++)
+        for (int i = 0; i < dropZoneParent[0].childCount; i++)
         {
-            dropZones[i] = dropZoneParent.GetChild(i).GetComponent<VRTK_SnapDropZone>();
+            dropZones.Add(dropZoneParent[0].GetChild(i).GetComponent<VRTK_SnapDropZone>());
+        }
+
+        for (int i = 0; i < dropZoneParent[1].childCount; i++)
+        {
+            dropZones.Add(dropZoneParent[1].GetChild(i).GetComponent<VRTK_SnapDropZone>());
         }
 
         yield return new WaitForSeconds(1);
 
-        for (int i = 0; i < dropZones.Length; i++)
+        for (int i = 0; i < dropZones.Count; i++)
         {
             GameObject reference = Instantiate(dropZones[i].GetCurrentSnappedObject(), Vector3.zero, Quaternion.identity);
             foodItems.Add(reference);
@@ -39,7 +43,7 @@ public class FridgeController : MonoBehaviour {
     {
         if (ready)
         {
-            for (int i = 0; i < dropZones.Length; i++)
+            for (int i = 0; i < dropZones.Count; i++)
             {
                 if (dropZones[i].GetCurrentSnappedObject() == null)
                 {

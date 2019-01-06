@@ -1,59 +1,34 @@
 fileFormatVersion: 2
-guid: 2440fdf9c4cb5134bbe0d3f4ad1ff8aa
+guid: b20eaad2b4173e84fb66e101cd9207f3
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: Door_1
-    100004: Door_2
-    100006: Door_3
-    100008: Door_4
-    100010: Exterior
-    100012: Interior_1
-    100014: Interior_2
-    100016: Interior_3
-    100018: Interior_4
-    400000: //RootNode
-    400002: Door_1
-    400004: Door_2
-    400006: Door_3
-    400008: Door_4
-    400010: Exterior
-    400012: Interior_1
-    400014: Interior_2
-    400016: Interior_3
-    400018: Interior_4
-    2100000: 03 - Default
-    2100002: Glass
-    2100004: Black
-    2100006: Interiors_lambert121
-    2300000: Door_1
-    2300002: Door_2
-    2300004: Door_3
-    2300006: Door_4
-    2300008: Exterior
-    2300010: Interior_1
-    2300012: Interior_2
-    2300014: Interior_3
-    2300016: Interior_4
-    3300000: Door_1
-    3300002: Door_2
-    3300004: Door_3
-    3300006: Door_4
-    3300008: Exterior
-    3300010: Interior_1
-    3300012: Interior_2
-    3300014: Interior_3
-    3300016: Interior_4
-    4300000: Exterior
-    4300002: Door_1
-    4300004: Interior_1
-    4300006: Door_3
-    4300008: Interior_2
-    4300010: Interior_3
-    4300012: Interior_4
-    4300014: Door_4
-    4300016: Door_2
+    100000: Bar
+    100002: Button
+    100004: Prop_Oven_White
+    100006: Slider
+    100008: //RootNode
+    400000: Bar
+    400002: Button
+    400004: Prop_Oven_White
+    400006: Slider
+    400008: //RootNode
+    2100000: Interiors_lambert121
+    2100002: 01 - Default
+    2100004: 03 - Default
+    2100006: 02 - Default
+    2300000: Bar
+    2300002: Button
+    2300004: Prop_Oven_White
+    2300006: Slider
+    3300000: Bar
+    3300002: Button
+    3300004: Prop_Oven_White
+    3300006: Slider
+    4300000: Prop_Oven_White
+    4300002: Slider
+    4300004: Bar
+    4300006: Button
     7400000: Take 001
     9500000: //RootNode
   externalObjects: {}
@@ -87,7 +62,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 2.5
     meshCompression: 0
     addColliders: 0
     importVisibility: 1

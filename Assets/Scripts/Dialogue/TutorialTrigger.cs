@@ -54,7 +54,7 @@ public class TutorialTrigger : MonoBehaviour {
         }
 
         dScript.EndDialogue();
-        tvScript.TVMainMenu();
+        tvScript.LoadMenuMode();
     }
 
     public void NextDialogue()

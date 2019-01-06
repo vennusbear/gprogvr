@@ -1,14 +1,36 @@
 fileFormatVersion: 2
-guid: 1817ae40c80552c4f9fe7e8dca7cb9aa
+guid: b341fbd146199c849a94f861c08092f1
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Door
+    100004: Interior
+    100006: Lower_Door
+    100008: MainBody
     400000: //RootNode
-    2100000: No Name
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Sphere001
+    400002: Door
+    400004: Interior
+    400006: Lower_Door
+    400008: MainBody
+    2100000: lambert1
+    2100002: 02 - Default
+    2100004: 01 - Default
+    2100006: 03 - Default
+    2300000: Door
+    2300002: Interior
+    2300004: Lower_Door
+    2300006: MainBody
+    3300000: Door
+    3300002: Interior
+    3300004: Lower_Door
+    3300006: MainBody
+    4300000: MainBody
+    4300002: Door
+    4300004: Interior
+    4300006: Lower_Door
+    7400000: Take 001
+    9500000: //RootNode
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -40,7 +62,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.3
+    globalScale: 2.5
     meshCompression: 0
     addColliders: 0
     importVisibility: 1
@@ -84,7 +106,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

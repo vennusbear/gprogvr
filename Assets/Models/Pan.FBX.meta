@@ -1,14 +1,23 @@
 fileFormatVersion: 2
-guid: 1817ae40c80552c4f9fe7e8dca7cb9aa
+guid: b3498275f4ce84e49b55a2ec24a79719
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2100000: No Name
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Sphere001
+    100000: Handle
+    100002: Items_FryPan_01
+    100004: //RootNode
+    400000: Handle
+    400002: Items_FryPan_01
+    400004: //RootNode
+    2100000: lambert1
+    2300000: Handle
+    2300002: Items_FryPan_01
+    3300000: Handle
+    3300002: Items_FryPan_01
+    4300000: Items_FryPan_01
+    4300002: Handle
+    7400000: Take 001
+    9500000: //RootNode
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -40,7 +49,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.3
+    globalScale: 0.4
     meshCompression: 0
     addColliders: 0
     importVisibility: 1
@@ -59,7 +68,7 @@ ModelImporter:
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 0
+    useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -84,7 +93,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

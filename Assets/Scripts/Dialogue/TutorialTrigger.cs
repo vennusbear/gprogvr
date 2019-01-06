@@ -35,7 +35,7 @@ public class TutorialTrigger : MonoBehaviour {
                     StartCoroutine(Timer(5));
                     yield return new WaitUntil(() => nextTriggered == true);
                     break;
-                case 5:
+                case 4:
                     yield return new WaitForSeconds(0.5f);
                     nextTriggered = false;
                     yield return new WaitUntil(() => nextTriggered == true);

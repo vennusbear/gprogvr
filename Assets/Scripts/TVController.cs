@@ -10,7 +10,8 @@ public class TVController : MonoBehaviour {
     private bool listGenerated;
 
     private TutorialTrigger dTrigger;
-    
+    private RecipeTrigger currentRecipe;
+
     private Vector3 tvPos;
 
     [SerializeField] private GameObject listUI;
@@ -18,7 +19,6 @@ public class TVController : MonoBehaviour {
     [SerializeField] private GameObject recipeUI;
 
     private DialogueManager dScript;
-
     private GameController gameScript;
 
     public Button mainButton;
@@ -33,6 +33,7 @@ public class TVController : MonoBehaviour {
     {
         gameScript = FindObjectOfType<GameController>().gameObject.GetComponent<GameController>();
         dTrigger = GetComponent<TutorialTrigger>();
+        currentRecipe = GetComponent<RecipeTrigger>();
         dScript = GetComponent<DialogueManager>();
         tvPos = transform.position;
         transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
@@ -135,9 +136,12 @@ public class TVController : MonoBehaviour {
         }
     }
 
-    void LoadMenu()
+    public void LoadRecipe(RecipeTrigger recipeTrigger)
     {
-
+        currentRecipe.dialogue = recipeTrigger.dialogue;
+        currentRecipe.RecipeScrollThrough();
+        SwitchButtons(recipeUI, false);
+        mainButton.interactable = true;
     }
 
     void ConvertGameObjectToFoodGoal()

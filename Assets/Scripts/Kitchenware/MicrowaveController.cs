@@ -222,17 +222,17 @@ public class MicrowaveController : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapBox(cookingArea.transform.position, cookingArea.transform.localScale / 2, Quaternion.identity, LayerMask.GetMask("Items"));
         foreach (Collider item in hitColliders)
         {
-            if (item.transform.GetComponent<Pizza>())
+            if (item.transform.GetComponent<Food>())
             {
                 item.transform.parent = turnTable;
-                StartCoroutine(item.transform.GetComponent<Pizza>().CookMicrowave(transform));
-            }
-
-            if (item.transform.GetComponent<Milk>())
-            {
-                item.transform.parent = turnTable;
-                StartCoroutine(item.transform.GetComponent<Milk>().CookMicrowave(transform));
+                StartCoroutine(item.transform.GetComponent<Food>().CookMicrowave(transform));
             }
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(cookingArea.position, cookingArea.localScale / 2);
     }
 }

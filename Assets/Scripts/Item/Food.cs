@@ -55,10 +55,26 @@ public class Food : MonoBehaviour {
 
     public virtual IEnumerator CookMicrowave(Transform microwave)
     {
-        StartCoroutine(CookCheck());
         while (microwave.GetComponent<MicrowaveController>().isCooking)
         {
             cookedTime += Time.deltaTime;
+            if (cookedTime > 5)
+            {
+                BurnedFood();
+            }
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    public virtual IEnumerator CookStove(Transform stove)
+    {
+        while (stove.GetComponent<StoveController>().isCooking) //always fail
+        {
+            cookedTime += Time.deltaTime;
+            if (cookedTime > 5)
+            {
+                BurnedFood();
+            }
             yield return new WaitForEndOfFrame();
         }
     }
@@ -69,9 +85,7 @@ public class Food : MonoBehaviour {
         {
             if (cookedTime >= requiredTime)
             {
-                currentState = FoodState.Cooked;
-                gameObject.GetComponent<MeshRenderer>().material.SetColor("_Color", cookedColor);
-                cookedSteam.SetActive(true);
+                CookedFood();
                 break;
             }
 
@@ -82,14 +96,33 @@ public class Food : MonoBehaviour {
         {
             if (cookedTime >= requiredTime + burnBuffer)
             {
-                currentState = FoodState.Burned;
-                gameObject.GetComponent<MeshRenderer>().material.SetColor("_Color", burnedColor);
-                cookedSteam.SetActive(false);
-                burnedSmoke.SetActive(true);
+                BurnedFood();
                 break;
             }
 
             yield return null;
         }
+    }
+
+    protected virtual void BurnedFood()
+    {
+        currentState = FoodState.Burned;
+        gameObject.GetComponent<MeshRenderer>().material.SetColor("_Color", burnedColor);
+        cookedSteam.SetActive(false);
+        burnedSmoke.SetActive(true);
+        StartCoroutine(DestroyBurned());
+    }
+
+    protected virtual void CookedFood()
+    {
+        currentState = FoodState.Cooked;
+        gameObject.GetComponent<MeshRenderer>().material.SetColor("_Color", cookedColor);
+        cookedSteam.SetActive(true);
+    }
+
+    protected virtual IEnumerator DestroyBurned()
+    {
+        yield return new WaitForSeconds(30);
+        Destroy(gameObject);
     }
 }

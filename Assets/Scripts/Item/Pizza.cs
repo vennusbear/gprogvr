@@ -41,15 +41,15 @@ public class Pizza : Food {
     //   //    }
     //   //}
 
-    //   public IEnumerator CookMicrowave(Transform microwave)
-    //   {
-    //       StartCoroutine(CookCheck());
-    //       while (microwave.GetComponent<MicrowaveController>().isCooking)
-    //       {
-    //           cookedTime += Time.deltaTime;
-    //           yield return new WaitForEndOfFrame();
-    //       }
-    //   }
+    public override IEnumerator CookMicrowave(Transform microwave)
+    {
+        StartCoroutine(CookCheck());
+        while (microwave.GetComponent<MicrowaveController>().isCooking)
+        {
+            cookedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+    }
 
     //   IEnumerator CookCheck()
     //   {

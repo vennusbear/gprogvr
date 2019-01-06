@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
 
-public class Egg : MonoBehaviour {
+public class Egg : Food {
 
     private bool canBreak;
     public bool broken;
@@ -17,8 +17,11 @@ public class Egg : MonoBehaviour {
     float thrownVelocity;
 
 	// Use this for initialization
-	void Start ()
+	protected override void Start ()
     {
+        foodID = 4;
+        requiredTime = 30;
+        burnBuffer = 10;
         eggRigidbody = GetComponent<Rigidbody>();
         eggObj = GetComponent<VRTK_InteractableObject>();
         closeColl = GetComponent<MeshCollider>();
@@ -71,5 +74,31 @@ public class Egg : MonoBehaviour {
         }
 
         thrownVelocity = eggRigidbody.velocity.sqrMagnitude;
+    }
+
+    public override IEnumerator CookStove(Transform stove)
+    {
+        StartCoroutine(CookCheck());
+        while (stove.GetComponent<StoveController>().isCooking)
+        {
+            cookedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    protected override void BurnedFood()
+    {
+        currentState = FoodState.Burned;
+        brokenObj.GetComponent<MeshRenderer>().material.SetColor("_Color", burnedColor);
+        cookedSteam.SetActive(false);
+        burnedSmoke.SetActive(true);
+        StartCoroutine(DestroyBurned());
+    }
+
+    protected override void CookedFood()
+    {
+        currentState = FoodState.Cooked;
+        brokenObj.GetComponent<MeshRenderer>().material.SetColor("_Color", cookedColor);
+        cookedSteam.SetActive(true);
     }
 }

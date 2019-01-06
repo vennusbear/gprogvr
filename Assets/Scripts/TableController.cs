@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TableController : MonoBehaviour {
 
+    private GameController gameScript;
+    public bool clear;
+
     private GameObject[] itemsInside;
     public LayerMask m_LayerMask;
     private Transform scanArea;
@@ -11,12 +14,13 @@ public class TableController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        gameScript = FindObjectOfType<GameController>().gameObject.GetComponent<GameController>();
         m_Started = true;
         scanArea = transform.GetChild(0);
 	}
 	
 
-    void GetInactiveInRadius()
+    void GetFoodInRadius()
     {
         //Use the OverlapBox to detect if there are any other colliders within this box area.
         //Use the GameObject's centre, half the size (as a radius) and rotation. This creates an invisible box around your GameObject.
@@ -25,9 +29,11 @@ public class TableController : MonoBehaviour {
         //Check when there is a new collider coming into contact with the box
         while (i < hitColliders.Length)
         {
-            //Output all of the collider names
-            Debug.Log("Hit : " + hitColliders[i].name + i);
-            //Increase the number of Colliders in the array
+            Debug.Log(hitColliders[i]);
+            if (gameScript.goalItems.Contains(hitColliders[i].gameObject))
+            {
+                clear = true;
+            }
             i++;
         }
     }
@@ -38,6 +44,14 @@ public class TableController : MonoBehaviour {
         if (m_Started)
         {
             Gizmos.DrawWireCube(scanArea.position, scanArea.localScale / 2);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Food"))
+        {
+            GetFoodInRadius();
         }
     }
 }

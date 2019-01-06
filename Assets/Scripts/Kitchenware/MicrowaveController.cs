@@ -227,6 +227,12 @@ public class MicrowaveController : MonoBehaviour
                 item.transform.parent = turnTable;
                 StartCoroutine(item.transform.GetComponent<Pizza>().CookMicrowave(transform));
             }
+
+            if (item.transform.GetComponent<Milk>())
+            {
+                item.transform.parent = turnTable;
+                StartCoroutine(item.transform.GetComponent<Milk>().CookMicrowave(transform));
+            }
         }
     }
 }

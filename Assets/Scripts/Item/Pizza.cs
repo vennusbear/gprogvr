@@ -7,6 +7,7 @@ public class Pizza : Food {
 
     protected override void Start()
     {
+        foodID = 1;
         requiredTime = 30;
         burnBuffer = 5;
         FoodColor(rawColor);

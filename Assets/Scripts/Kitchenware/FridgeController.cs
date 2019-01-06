@@ -9,7 +9,7 @@ public class FridgeController : MonoBehaviour {
     public VRTK_ArtificialRotator fridgeDoor;
     public Transform dropZoneParent;
     public VRTK_SnapDropZone[] dropZones;
-    public GameObject[] foodItems;
+    public List<GameObject> foodItems = new List<GameObject>();
     bool ready = false;
 
     Coroutine checkRoutine;
@@ -18,13 +18,18 @@ public class FridgeController : MonoBehaviour {
     IEnumerator Start()
     {
         dropZones = new VRTK_SnapDropZone[dropZoneParent.childCount];
-        foodItems = new GameObject[dropZoneParent.childCount];
 
-        yield return new WaitForSeconds(3);
         for (int i = 0; i < dropZones.Length; i++)
         {
             dropZones[i] = dropZoneParent.GetChild(i).GetComponent<VRTK_SnapDropZone>();
-            foodItems[i] = dropZones[i].GetCurrentSnappedObject();
+        }
+
+        yield return new WaitForSeconds(1);
+
+        for (int i = 0; i < dropZones.Length; i++)
+        {
+            GameObject reference = Instantiate(dropZones[i].GetCurrentSnappedObject(), Vector3.zero, Quaternion.identity);
+            foodItems.Add(reference);
         }
 
         ready = true;
@@ -39,6 +44,7 @@ public class FridgeController : MonoBehaviour {
                 if (dropZones[i].GetCurrentSnappedObject() == null)
                 {
                     GameObject foodClone = Instantiate(foodItems[i], dropZones[i].transform);
+                    foodClone.GetComponent<Rigidbody>().isKinematic = false;
                     dropZones[i].snapDuration = 0;
                     dropZones[i].ForceSnap(foodClone);
                     dropZones[i].snapDuration = 0.1f;

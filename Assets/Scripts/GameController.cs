@@ -10,8 +10,9 @@ public class GameController : MonoBehaviour {
     public GameState currentState;
 
     public int level = 1;
-    public List<GameObject> goalItems;
-    private List<GameObject> allItems;
+    public List<GameObject> goalItems = new List<GameObject>();
+    private List<Food> allFood = new List<Food>();
+    private List<GameObject> allItems = new List<GameObject>();
 
     [SerializeField] private TextMeshPro welcomeText;
     [SerializeField] private TextMeshPro grabText;
@@ -20,14 +21,19 @@ public class GameController : MonoBehaviour {
     [SerializeField] private TextMeshPro walkText;
 
     private ClockController clockScript;
-    private TutorialTrigger dTrigger;
+    private TableController tableScript;
 
-    void Awake()
+    private void Awake()
     {
-        allItems = new List<GameObject>(GameObject.FindGameObjectsWithTag("Food"));
+        allFood = FindObjectsOfType<Food>().ToList();
+        for (int i = 0; i < allFood.Count; i++)
+        {
+            allItems.Add(allFood[i].gameObject);
+        }
+        tableScript = FindObjectOfType<TableController>();
         clockScript = FindObjectOfType<ClockController>();
     }
-    
+
     IEnumerator Start () {
         currentState = GameState.Start;
         welcomeText.enabled = true;
@@ -45,6 +51,7 @@ public class GameController : MonoBehaviour {
         {
             currentState = GameState.Play;
             LoadGoalItems(1);
+            tableScript.GetFoodID();
             StartCoroutine(TextFade(buttonText, 2));
             StartCoroutine(clockScript.HourMoving("default"));
         }
@@ -57,6 +64,7 @@ public class GameController : MonoBehaviour {
             case 1:
                 goalItems.Add(allItems.Where(obj => obj.name == "Pizza").SingleOrDefault());
                 goalItems.Add(allItems.Where(obj => obj.name == "Milk").SingleOrDefault());
+                goalItems.Add(allItems.Where(obj => obj.name == "Steak").SingleOrDefault());
                 break;
             case 2:
                 break;
@@ -93,5 +101,11 @@ public class GameController : MonoBehaviour {
         {
             StartCoroutine(TextFade(walkText, 1));
         }
+    }
+
+    public void Victory()
+    {
+        currentState = GameState.End;
+        print("VICTORY!");
     }
 }

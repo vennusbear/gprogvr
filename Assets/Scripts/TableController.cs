@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TableController : MonoBehaviour {
 
     private GameController gameScript;
     public bool clear;
+    [SerializeField] List<int> requiredID = new List<int>();
+    List<int> idInside = new List<int>();
+    [SerializeField] List<int> missingID = new List<int>();
+    List<GameObject> itemsInside = new List<GameObject>();
 
-    private GameObject[] itemsInside;
     public LayerMask m_LayerMask;
     private Transform scanArea;
     bool m_Started;
@@ -18,23 +22,45 @@ public class TableController : MonoBehaviour {
         m_Started = true;
         scanArea = transform.GetChild(0);
 	}
+
+    public void GetFoodID()
+    {
+        for (int i = 0; i < gameScript.goalItems.Count; i++)
+        {
+            requiredID.Add(gameScript.goalItems[i].GetComponent<Food>().foodID);
+        }
+    }
 	
 
     void GetFoodInRadius()
     {
-        //Use the OverlapBox to detect if there are any other colliders within this box area.
-        //Use the GameObject's centre, half the size (as a radius) and rotation. This creates an invisible box around your GameObject.
-        Collider[] hitColliders = Physics.OverlapBox(scanArea.position, scanArea.localScale / 2, Quaternion.identity, m_LayerMask);
-        int i = 0;
-        //Check when there is a new collider coming into contact with the box
-        while (i < hitColliders.Length)
+        if (gameScript.currentState == GameController.GameState.Play)
         {
-            Debug.Log(hitColliders[i]);
-            if (gameScript.goalItems.Contains(hitColliders[i].gameObject))
+            Collider[] hitColliders = Physics.OverlapBox(scanArea.position, scanArea.localScale / 2, Quaternion.identity, m_LayerMask);
+            itemsInside.Clear();
+            idInside.Clear();
+            for (int i = 0; i < hitColliders.Length; i++)
             {
-                clear = true;
+                if (requiredID.Contains(hitColliders[i].gameObject.GetComponent<Food>().foodID))
+                {
+                    itemsInside.Add(hitColliders[i].gameObject);
+                }
             }
-            i++;
+
+            for (int i = 0; i < itemsInside.Count; i++)
+            {
+                idInside.Add(itemsInside[i].gameObject.GetComponent<Food>().foodID);
+            }
+
+            missingID = requiredID.Except(idInside).ToList();
+
+            if (itemsInside.Count >= requiredID.Count)
+            {
+                if (missingID.Count == 0)
+                {
+                    clear = true;
+                }
+            }
         }
     }
 
@@ -49,9 +75,29 @@ public class TableController : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Food"))
+        if (other.gameObject.GetComponent<Food>() != null)
         {
             GetFoodInRadius();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.GetComponent<Food>() != null)
+        {
+            Food tempScript = other.gameObject.GetComponent<Food>();
+            for (int i = 0; i < itemsInside.Count; i++)
+            {
+                if (other.gameObject == itemsInside[i])
+                {
+                    itemsInside.Remove(itemsInside[i]);
+
+                    if (idInside.Contains(tempScript.foodID))
+                    {
+                        idInside.Remove(tempScript.foodID);
+                    }
+                }
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ public class Milk : Food {
     // Use this for initialization
     protected override void Start()
     {
+        foodID = 2;
         requiredTime = 5;
         burnBuffer = 0;
         currentState = FoodState.Cooked;

@@ -9,6 +9,8 @@ public class Food : MonoBehaviour {
     protected int requiredTime = 10;
     protected int burnBuffer = 5;
 
+    public int foodID;
+
     public FoodState currentState;
     public enum FoodState { Raw, Cooked, Burned }
 

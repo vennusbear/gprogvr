@@ -29,7 +29,6 @@ public class Food : MonoBehaviour {
     
     protected virtual void FoodColor(Color color)
     {
-        print(gameObject.GetComponent<MeshRenderer>().material);
         gameObject.GetComponent<MeshRenderer>().material.color = color;
     }
 

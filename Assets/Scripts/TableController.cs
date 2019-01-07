@@ -41,7 +41,7 @@ public class TableController : MonoBehaviour {
             idInside.Clear();
             for (int i = 0; i < hitColliders.Length; i++)
             {
-                if (requiredID.Contains(hitColliders[i].gameObject.GetComponent<Food>().foodID))
+                if (requiredID.Contains(hitColliders[i].gameObject.GetComponent<Food>().foodID) && hitColliders[i].gameObject.GetComponent<Food>().currentState == Food.FoodState.Cooked)
                 {
                     itemsInside.Add(hitColliders[i].gameObject);
                 }

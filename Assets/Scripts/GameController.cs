@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
@@ -54,24 +55,30 @@ public class GameController : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            Time.timeScale = 5;
-        }
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            Time.timeScale = 1;
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            Time.timeScale = 0.5f;
-        }
-
         if (currentState == GameState.Play)
         {
             gameTime += Time.deltaTime;
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ChangeGameScene(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Time.timeScale = 1;
+        }
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            Time.timeScale = 5;
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Time.timeScale = 0.3f;
+        }
     }
 
     public void Begin()
@@ -79,10 +86,9 @@ public class GameController : MonoBehaviour {
         if (currentState == GameState.Start)
         {
             currentState = GameState.Play;
-            LoadLevelItems(1);
+            LoadLevelItems(level);
             tableScript.GetFoodID();
             StartCoroutine(TextFade(buttonText, 2));
-            StartCoroutine(clockScript.HourMoving("default"));
             StartCoroutine(SpawnEnemy());
         }
     }
@@ -93,13 +99,17 @@ public class GameController : MonoBehaviour {
         {
             case 1:
                 spawnTime = 60;
+                StartCoroutine(clockScript.HourMoving("Morning"));
                 goalItems.Add(allItems.Where(obj => obj.name == "Sandwich").SingleOrDefault());
                 goalItems.Add(allItems.Where(obj => obj.name == "Milk").SingleOrDefault());
                 break;
             case 2:
                 spawnTime = 30;
+                StartCoroutine(clockScript.HourMoving("Afternoon"));
+                goalItems.Add(allItems.Where(obj => obj.name == "OrangeJuice").SingleOrDefault());
                 goalItems.Add(allItems.Where(obj => obj.name == "Pizza").SingleOrDefault());
                 goalItems.Add(allItems.Where(obj => obj.name == "EggToast").SingleOrDefault());
+                goalItems.Add(allItems.Where(obj => obj.name == "Steak").SingleOrDefault());
                 break;
             default:
                 break;
@@ -145,9 +155,15 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    public void Victory()
+    public IEnumerator Victory()
     {
         currentState = GameState.End;
-        print("VICTORY!");
+        yield return new WaitForSeconds(10);
+        ChangeGameScene(0);
+    }
+
+    public void ChangeGameScene(int i)
+    {
+        SceneManager.LoadScene(i);
     }
 }

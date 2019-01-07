@@ -6,6 +6,7 @@ using System.Linq;
 public class TableController : MonoBehaviour {
 
     private GameController gameScript;
+    public GameObject victoryText;
     public bool clear;
     [SerializeField] List<int> requiredID = new List<int>();
     List<int> idInside = new List<int>();
@@ -41,9 +42,12 @@ public class TableController : MonoBehaviour {
             idInside.Clear();
             for (int i = 0; i < hitColliders.Length; i++)
             {
-                if (requiredID.Contains(hitColliders[i].gameObject.GetComponent<Food>().foodID) && hitColliders[i].gameObject.GetComponent<Food>().currentState == Food.FoodState.Cooked)
+                if (requiredID.Contains(hitColliders[i].gameObject.GetComponent<Food>().foodID))
                 {
-                    itemsInside.Add(hitColliders[i].gameObject);
+                    if (hitColliders[i].gameObject.GetComponent<Food>().currentState == Food.FoodState.Cooked)
+                    {
+                        itemsInside.Add(hitColliders[i].gameObject);
+                    }
                 }
             }
 
@@ -58,7 +62,8 @@ public class TableController : MonoBehaviour {
             {
                 if (missingID.Count == 0)
                 {
-                    clear = true;
+                    StartCoroutine(gameScript.Victory());
+                    victoryText.SetActive(true);
                 }
             }
         }

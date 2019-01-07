@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Milk : Food {
 
+    private float leftOutTime;
+    private bool leftOut;
+
     // Use this for initialization
     protected override void Start()
     {
@@ -14,28 +17,46 @@ public class Milk : Food {
         FoodColor(rawColor);
     }
 
-    public override IEnumerator CookMicrowave(Transform microwave)
+    private void Update()
     {
-        StartCoroutine(CookCheck());
-        while (microwave.GetComponent<MicrowaveController>().isCooking)
+        if (leftOut)
         {
-            cookedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            leftOutTime += Time.deltaTime;
         }
     }
 
-    protected override IEnumerator CookCheck()
-    {
-        while (currentState != FoodState.Burned)
-        {
-            if (cookedTime >= requiredTime)
-            {
-                currentState = FoodState.Burned;
-                burnedSmoke.SetActive(true);
-                break;
-            }
+    //public override IEnumerator CookMicrowave(Transform microwave)
+    //{
+    //    StartCoroutine(CookCheck());
+    //    while (microwave.GetComponent<MicrowaveController>().isCooking)
+    //    {
+    //        cookedTime += Time.deltaTime;
+    //        yield return new WaitForEndOfFrame();
+    //    }
+    //}
 
-            yield return null;
-        }
+    //protected override IEnumerator CookCheck()
+    //{
+    //    while (currentState != FoodState.Burned)
+    //    {
+    //        if (cookedTime >= requiredTime)
+    //        {
+    //            currentState = FoodState.Burned;
+    //            burnedSmoke.SetActive(true);
+    //            break;
+    //        }
+
+    //        yield return null;
+    //    }
+    //}
+
+    void LeaveFridge()
+    {
+        leftOut = true;
+    }
+
+    void EnterFridge()
+    {
+        leftOut = false;
     }
 }

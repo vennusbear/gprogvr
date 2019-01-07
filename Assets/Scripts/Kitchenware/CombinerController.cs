@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using TMPro;
+using VRTK.Controllables.ArtificialBased;
 
 public class CombinerController : MonoBehaviour {
 
@@ -10,6 +11,7 @@ public class CombinerController : MonoBehaviour {
     public Transform scanArea;
     public Transform references;
     public Transform spawnPos;
+    public VRTK_ArtificialRotator doorScript;
     public List<FoodRecipe> foodRecipes;
 
     [SerializeField] List<int> idInside = new List<int>();
@@ -18,6 +20,8 @@ public class CombinerController : MonoBehaviour {
     GameController gameScript;
 
     public TextMeshProUGUI textComp;
+
+    Coroutine scanningRoutine;
 
     [System.Serializable]
     public class FoodRecipe {
@@ -52,7 +56,16 @@ public class CombinerController : MonoBehaviour {
 
     }
 
-    public void GetFoodInRadius()
+    void DoorClosed()
+    {
+        if (scanningRoutine != null)
+        {
+            StopCoroutine(scanningRoutine);
+        }
+    }
+
+
+    void GetFoodInRadius()
     {
         if (gameScript.currentState == GameController.GameState.Play)
         {
@@ -72,24 +85,24 @@ public class CombinerController : MonoBehaviour {
             {
                 if (CompareLists(idInside, fr.recipeID))
                 {
-                    GameObject spawnee = Instantiate(fr.foodObject, spawnPos.position, Quaternion.identity);
-                    spawnee.transform.SetParent(spawnPos);
-                    textComp.text = fr.foodObject.name;
-                    DestroyUsedObjects(fr);
-                    break;
+                    StartCoroutine(Combining(fr));
                 }
-                //missingID = fr.recipeID.Except(idInside).ToList();
-
-                //if (missingID.Count == 0)
-                //{
-                //    GameObject spawnee = Instantiate(fr.foodObject, spawnPos.position, Quaternion.identity);
-                //    spawnee.transform.SetParent(spawnPos);
-                //    textComp.text = fr.foodObject.name;
-                //    break;
-                //}
             }
         }
     }
+
+    IEnumerator Combining(FoodRecipe fr)
+    {
+        doorScript.isLocked = true;
+        textComp.text = "Combining...";
+        yield return new WaitForSeconds(15);
+        doorScript.isLocked = false;
+        GameObject spawnee = Instantiate(fr.foodObject, spawnPos.position, Quaternion.identity);
+        spawnee.transform.SetParent(spawnPos);
+        textComp.text = fr.foodObject.name;
+        DestroyUsedObjects(fr);
+    }
+
     void DestroyUsedObjects(FoodRecipe fr)
     {
         for (int i = 0; i < objectInside.Count; i++) //Destroy

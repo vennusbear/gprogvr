@@ -262,7 +262,6 @@ public class AIController : MonoBehaviour
         while (currentBehaviour == BehaviourState.Escape)
         {
             distanceTarget = agent.remainingDistance;
-            print(distanceTarget);
             if (agent.pathPending)
             {
                 yield return null;
@@ -349,14 +348,6 @@ public class AIController : MonoBehaviour
                             if (hit.collider.gameObject == other.gameObject)
                             {
                                 StartCoroutine(TargetSpotted(other));
-                                //currentTarget = other.gameObject.transform.position;
-                                //if (currentCoroutine != null)
-                                //{
-                                //    StopCoroutine(currentCoroutine);
-                                //    currentCoroutine = null;
-                                //}
-
-                                //currentCoroutine = StartCoroutine(RunState(other.gameObject));
                             }
                         }
                     }

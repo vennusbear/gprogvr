@@ -12,12 +12,15 @@ public class FridgeController : MonoBehaviour {
     public List<GameObject> foodItems = new List<GameObject>();
     bool ready = false;
 
+    private GameController gameScript;
+
     Coroutine checkRoutine;
 
     // Use this for initialization
     IEnumerator Start()
     {
-
+        gameScript = FindObjectOfType<GameController>().gameObject.GetComponent<GameController>();
+        fridgeDoor.isLocked = true;
         for (int i = 0; i < dropZoneParent[0].childCount; i++)
         {
             dropZones.Add(dropZoneParent[0].GetChild(i).GetComponent<VRTK_SnapDropZone>());
@@ -36,7 +39,17 @@ public class FridgeController : MonoBehaviour {
             foodItems.Add(reference);
         }
 
+        StartCoroutine(WaitPlayToUnlock());
         ready = true;
+    }
+
+    IEnumerator WaitPlayToUnlock()
+    {
+        while (gameScript.currentState != GameController.GameState.Play)
+        {
+            yield return null;
+        }
+        fridgeDoor.isLocked = false;
     }
 
     public void SpawnFood()

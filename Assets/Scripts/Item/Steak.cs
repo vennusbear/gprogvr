@@ -13,8 +13,13 @@ public class Steak : Food {
         FoodColor(rawColor);
     }
 
-    // Update is called once per frame
-    void Update () {
-		
-	}
+    public override IEnumerator CookStove(Transform stove)
+    {
+        cookingRoutine = StartCoroutine(CookCheck());
+        while (stove.GetComponent<StoveController>().isCooking && currentState != Food.FoodState.Burned)
+        {
+            cookedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+    }
 }

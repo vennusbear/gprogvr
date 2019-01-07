@@ -57,7 +57,15 @@ public class TVController : MonoBehaviour {
             yield return null;
         }
 
-        StartCoroutine(dTrigger.TutorialTextScrollThrough());
+        if (gameScript.level == 1)
+        {
+            StartCoroutine(dTrigger.TutorialTextScrollThrough());
+        }
+
+        else
+        {
+            LoadMenuMode();
+        }
     }
 
     public void LoadMenuMode()

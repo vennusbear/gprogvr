@@ -16,9 +16,12 @@ public class AIController : MonoBehaviour
     private int prevPoint;
     private float linkCD;
 
+    ThiefCarScript carScript;
+
     Coroutine currentCoroutine; //coroutine that is currently running.
 
     public Transform eyeTarget;
+    public Transform spawnPos;
 
     #region //AI 
     public enum BehaviourState { Paused, Idle, Patrol, Spy, Run, Escape, Die}
@@ -27,6 +30,7 @@ public class AIController : MonoBehaviour
     NavMeshAgent agent;
     public float FOV = 110f;
     SphereCollider col;
+    [SerializeField] List<GameObject> stolenObject = new List<GameObject>();
     #endregion
 
     #region //Animator
@@ -45,6 +49,7 @@ public class AIController : MonoBehaviour
     {
         AssignDestinationPoints();
         gameManager = FindObjectOfType<GameController>();
+        carScript = FindObjectOfType<ThiefCarScript>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         headScript = GetComponent<HeadLookController>();
         agent = GetComponent<NavMeshAgent>();
@@ -55,10 +60,25 @@ public class AIController : MonoBehaviour
     private void Start()
     {
         currentBehaviour = BehaviourState.Paused;
+        thiefAnim.gameObject.SetActive(false);
     }
 
-    IEnumerator StartAI()
-    { 
+    public IEnumerator StartAI()
+    {
+        GetComponent<Collider>().enabled = true;
+        prevPoint = 0;
+        destPoint = 0;
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+        }
+        StartCoroutine(carScript.LerpCar(carScript.middlePos));
+        while (carScript.transform.position.x != carScript.middlePos)
+        {
+            yield return null;
+        }
+
+        thiefAnim.gameObject.SetActive(true);
         currentCoroutine = StartCoroutine(PatrolState());
         while (true)
         {
@@ -217,22 +237,24 @@ public class AIController : MonoBehaviour
     IEnumerator EscapeState(GameObject target)
     {
         currentBehaviour = BehaviourState.Escape;
-        Vector3 startPos = target.transform.position;
-        target.GetComponent<BoxCollider>().enabled = false;
-        float normalizedTime = 0;
-        thiefAnim.SetTrigger("Pick");
-        while (normalizedTime < 1.0f)
+        if (target != null)
         {
-            target.transform.position = Vector3.Lerp(startPos, transform.position, normalizedTime);
-            normalizedTime += Time.deltaTime / 0.5f;
-            yield return null;
-        }
+            Vector3 startPos = target.transform.position;
+            target.GetComponent<Collider>().enabled = false;
+            float normalizedTime = 0;
+            thiefAnim.SetTrigger("Pick");
+            while (normalizedTime < 1.0f)
+            {
+                target.transform.position = Vector3.Lerp(startPos, transform.position, normalizedTime);
+                normalizedTime += Time.deltaTime / 0.5f;
+                yield return null;
+            }
 
-        target.transform.parent = transform;
-        target.SetActive(false);
+            target.transform.parent = transform;
+            target.SetActive(false);
+        }
         agent.SetDestination(escapePoint.position);
         distanceTarget = agent.remainingDistance;
-        print(distanceTarget);
         agent.speed = 3.5f;
         agent.angularSpeed = 500;
         agent.stoppingDistance = 0;
@@ -248,7 +270,25 @@ public class AIController : MonoBehaviour
 
             else if (distanceTarget <= agent.stoppingDistance)
             {
-                currentCoroutine = StartCoroutine(PatrolState());
+                if (target != null)
+                {
+                    target.SetActive(true);
+                    stolenObject.Add(target);
+                    if (stolenObject.Count >= 3)
+                    {
+                        thiefAnim.gameObject.SetActive(false);
+                        StartCoroutine(carScript.LerpCar(carScript.endPos));
+                        foreach (GameObject obj in stolenObject)
+                        {
+                            stolenObject.Remove(obj);
+                            Destroy(obj);
+                        }
+                        yield return new WaitForSeconds(30);
+                        StartCoroutine(StartAI());
+                    }
+                }
+
+                StartCoroutine(StartAI());
             }
 
             yield return null;
@@ -293,9 +333,9 @@ public class AIController : MonoBehaviour
     {
         if (currentBehaviour == BehaviourState.Spy)
         {
-            if (other.gameObject.GetComponent<Pizza>() != null)
+            if (other.gameObject.GetComponent<Food>() != null)
             {
-                if (other.gameObject.GetComponent<Pizza>().currentState == Pizza.FoodState.Cooked) //check if it's cooked
+                if (other.gameObject.GetComponent<Food>().currentState == Food.FoodState.Cooked) //check if it's cooked
                 {
                     Vector3 eyePos = transform.position + (transform.up * 1.5f);
                     Vector3 direction = other.transform.position - eyePos;
@@ -327,7 +367,7 @@ public class AIController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponent<Rigidbody>().velocity.sqrMagnitude > 0.5f)
+        if (collision.gameObject.GetComponent<Rigidbody>().velocity.sqrMagnitude > 1f)
         {
             if (currentCoroutine != null)
             {
@@ -342,7 +382,23 @@ public class AIController : MonoBehaviour
     {
         currentBehaviour = BehaviourState.Die;
         GetComponent<NavMeshAgent>().enabled = false;
+        GetComponent<Collider>().enabled = false;
         thiefAnim.SetBool("Death_b", true);
+        foreach(GameObject obj in stolenObject)
+        {
+            obj.transform.position = spawnPos.position;
+            obj.transform.parent = null;
+            obj.GetComponent<Collider>().enabled = true;
+            Rigidbody rb = obj.GetComponent<Rigidbody>();
+            print(rb);
+            rb.AddExplosionForce(3, spawnPos.position, 0.5f, 3f);
+        }
+        stolenObject.Clear();
+        yield return new WaitForSeconds(10);
+        thiefAnim.SetBool("Death_b", false);
         yield return null;
+        yield return new WaitForSeconds(thiefAnim.GetCurrentAnimatorClipInfo(0).Length);
+        GetComponent<NavMeshAgent>().enabled = true;
+        StartCoroutine(EscapeState(null));
     }
 }

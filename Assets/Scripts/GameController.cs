@@ -9,6 +9,8 @@ public class GameController : MonoBehaviour {
     public enum GameState { Start, Play, End }
     public GameState currentState;
 
+    public float gameTime;
+
     public int level = 1;
     public List<GameObject> goalItems = new List<GameObject>();
     private List<Food> allFood = new List<Food>();
@@ -19,6 +21,10 @@ public class GameController : MonoBehaviour {
     [SerializeField] private TextMeshPro doorText;
     [SerializeField] private TextMeshPro buttonText;
     [SerializeField] private TextMeshPro walkText;
+
+    private AIController aiScript;
+    bool aiSpawned;
+    int spawnTime;
 
     private ClockController clockScript;
     private TableController tableScript;
@@ -32,6 +38,7 @@ public class GameController : MonoBehaviour {
         }
         tableScript = FindObjectOfType<TableController>();
         clockScript = FindObjectOfType<ClockController>();
+        aiScript = FindObjectOfType<AIController>();
     }
 
     IEnumerator Start () {
@@ -49,12 +56,22 @@ public class GameController : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            Time.timeScale = 3;
+            Time.timeScale = 5;
         }
         if (Input.GetKeyDown(KeyCode.J))
         {
             Time.timeScale = 1;
         }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Time.timeScale = 0.5f;
+        }
+
+        if (currentState == GameState.Play)
+        {
+            gameTime += Time.deltaTime;
+        }
+
     }
 
     public void Begin()
@@ -62,28 +79,40 @@ public class GameController : MonoBehaviour {
         if (currentState == GameState.Start)
         {
             currentState = GameState.Play;
-            LoadGoalItems(1);
+            LoadLevelItems(1);
             tableScript.GetFoodID();
             StartCoroutine(TextFade(buttonText, 2));
             StartCoroutine(clockScript.HourMoving("default"));
+            StartCoroutine(SpawnEnemy());
         }
     }
 
-    void LoadGoalItems(int level)
+    void LoadLevelItems(int level)
     {
         switch (level)
         {
             case 1:
+                spawnTime = 60;
                 goalItems.Add(allItems.Where(obj => obj.name == "Sandwich").SingleOrDefault());
                 goalItems.Add(allItems.Where(obj => obj.name == "Milk").SingleOrDefault());
                 break;
             case 2:
+                spawnTime = 30;
                 goalItems.Add(allItems.Where(obj => obj.name == "Pizza").SingleOrDefault());
                 goalItems.Add(allItems.Where(obj => obj.name == "EggToast").SingleOrDefault());
                 break;
             default:
                 break;
         }
+    }
+
+    IEnumerator SpawnEnemy()
+    {
+        while (gameTime < spawnTime)
+        {
+            yield return null;
+        }
+        StartCoroutine(aiScript.StartAI());
     }
 
     IEnumerator TextFade(TextMeshPro text, float speed)

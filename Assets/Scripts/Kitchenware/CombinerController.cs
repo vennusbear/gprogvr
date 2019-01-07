@@ -54,7 +54,6 @@ public class CombinerController : MonoBehaviour {
 
     public void GetFoodInRadius()
     {
-        print("Combiner Checking");
         if (gameScript.currentState == GameController.GameState.Play)
         {
             idInside.Clear();

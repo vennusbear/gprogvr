@@ -5,9 +5,9 @@ using UnityEngine;
 public class ThiefCarScript : MonoBehaviour {
 
     Vector3 currentPos;
-    float middlePos;
-    float startPos;
-    float endPos;
+    public float middlePos;
+    public float startPos;
+    public float endPos;
     bool isMoving;
 
     public ParticleSystem tireSmoke;
@@ -44,7 +44,7 @@ public class ThiefCarScript : MonoBehaviour {
         }
     }
 
-    IEnumerator LerpCar(float targetX)
+    public IEnumerator LerpCar(float targetX)
     {
         if (!isMoving)
         {
@@ -61,6 +61,11 @@ public class ThiefCarScript : MonoBehaviour {
             }
             tireSmoke.Stop();
             isMoving = false;
+
+            if (transform.position.x == endPos)
+            {
+                transform.position = new Vector3(startPos, currentPos.y, currentPos.z);
+            }
         }
     }
 }

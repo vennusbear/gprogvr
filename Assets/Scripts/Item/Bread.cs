@@ -8,7 +8,7 @@ public class Bread : Food {
     {
         cookedColor = new Color32(255, 167, 0, 255);
         foodID = 5;
-        requiredTime = 60;
+        requiredTime = 30;
         burnBuffer = 15;
 
     }
@@ -21,5 +21,6 @@ public class Bread : Food {
             cookedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        transform.SetParent(null);
     }
 }

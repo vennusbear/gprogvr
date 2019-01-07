@@ -49,6 +49,7 @@ public class Pizza : Food {
             cookedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        transform.SetParent(null);
     }
 
     //   IEnumerator CookCheck()

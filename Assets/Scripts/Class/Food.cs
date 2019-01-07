@@ -64,6 +64,7 @@ public class Food : MonoBehaviour {
             }
             yield return new WaitForEndOfFrame();
         }
+        transform.SetParent(null);
     }
 
     public virtual IEnumerator CookStove(Transform stove)

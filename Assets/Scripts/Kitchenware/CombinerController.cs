@@ -13,7 +13,7 @@ public class CombinerController : MonoBehaviour {
     public List<FoodRecipe> foodRecipes;
 
     [SerializeField] List<int> idInside = new List<int>();
-    List<int> missingID = new List<int>();
+    List<GameObject> objectInside = new List<GameObject>();
 
     GameController gameScript;
 
@@ -22,14 +22,16 @@ public class CombinerController : MonoBehaviour {
     [System.Serializable]
     public class FoodRecipe {
         public GameObject foodObject;
-        public int[] recipeID;
+        public List<int> recipeID;
 
-        public FoodRecipe(int[] numberRecipe, GameObject foodObj)
+        public FoodRecipe(List<int> numberRecipe, GameObject foodObj)
         {
             recipeID = numberRecipe;
             foodObject = foodObj;
         }
     }
+
+    
 
     // Use this for initialization
     void Start ()
@@ -56,26 +58,46 @@ public class CombinerController : MonoBehaviour {
         if (gameScript.currentState == GameController.GameState.Play)
         {
             idInside.Clear();
+            objectInside.Clear();
             Collider[] hitColliders = Physics.OverlapBox(scanArea.position, scanArea.localScale / 2, Quaternion.identity, m_LayerMask);
-            for (int i = 0; i < hitColliders.Length; i++)
+            for (int i = 0; i < hitColliders.Length; i++) //Add
             {
-                if (hitColliders[i].gameObject.GetComponent<Food>())
+                if (hitColliders[i].gameObject.GetComponent<Food>() && hitColliders[i].gameObject.GetComponent<Food>().currentState == Food.FoodState.Cooked)
                 {
+                    objectInside.Add(hitColliders[i].gameObject);
                     idInside.Add(hitColliders[i].gameObject.GetComponent<Food>().foodID);
                 }
             }
 
             foreach (FoodRecipe fr in foodRecipes)
             {
-                missingID.Clear();
-                missingID = fr.recipeID.Except(idInside).ToList();
-
-                if (missingID.Count == 0)
+                if (CompareLists(idInside, fr.recipeID))
                 {
                     GameObject spawnee = Instantiate(fr.foodObject, spawnPos.position, Quaternion.identity);
+                    spawnee.transform.SetParent(spawnPos);
                     textComp.text = fr.foodObject.name;
+                    DestroyUsedObjects(fr);
                     break;
                 }
+                //missingID = fr.recipeID.Except(idInside).ToList();
+
+                //if (missingID.Count == 0)
+                //{
+                //    GameObject spawnee = Instantiate(fr.foodObject, spawnPos.position, Quaternion.identity);
+                //    spawnee.transform.SetParent(spawnPos);
+                //    textComp.text = fr.foodObject.name;
+                //    break;
+                //}
+            }
+        }
+    }
+    void DestroyUsedObjects(FoodRecipe fr)
+    {
+        for (int i = 0; i < objectInside.Count; i++) //Destroy
+        {
+            if (fr.recipeID.Contains(objectInside[i].gameObject.GetComponent<Food>().foodID))
+            {
+                Destroy(objectInside[i].gameObject);
             }
         }
     }
@@ -84,6 +106,42 @@ public class CombinerController : MonoBehaviour {
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(scanArea.position, scanArea.localScale / 2);
+    }
+
+    public static bool CompareLists<T>(List<T> aListA, List<T> aListB)
+    {
+        if (aListA == null || aListB == null || aListA.Count != aListB.Count)
+            return false;
+        if (aListA.Count == 0)
+            return true;
+        Dictionary<T, int> lookUp = new Dictionary<T, int>();
+        // create index for the first list
+        for (int i = 0; i < aListA.Count; i++)
+        {
+            int count = 0;
+            if (!lookUp.TryGetValue(aListA[i], out count))
+            {
+                lookUp.Add(aListA[i], 1);
+                continue;
+            }
+            lookUp[aListA[i]] = count + 1;
+        }
+        for (int i = 0; i < aListB.Count; i++)
+        {
+            int count = 0;
+            if (!lookUp.TryGetValue(aListB[i], out count))
+            {
+                // early exit as the current value in B doesn't exist in the lookUp (and not in ListA)
+                return false;
+            }
+            count--;
+            if (count <= 0)
+                lookUp.Remove(aListB[i]);
+            else
+                lookUp[aListB[i]] = count;
+        }
+        // if there are remaining elements in the lookUp, that means ListA contains elements that do not exist in ListB
+        return lookUp.Count == 0;
     }
 
 }

@@ -9,9 +9,9 @@ public class EggToast : ComplexFood {
     // Use this for initialization
     protected override void Start()
     {
-        recipeID = new int[2];
-        recipeID[0] = 4;
-        recipeID[1] = 5;
+        recipeID.Clear();
+        recipeID.Add(104);
+        recipeID.Add(5);
         foodID = 9;
 
         cookedColor = new Color32(255, 167, 0, 255);

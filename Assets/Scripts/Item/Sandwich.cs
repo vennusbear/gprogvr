@@ -7,10 +7,11 @@ public class Sandwich : ComplexFood {
     // Use this for initialization
     protected override void Start()
     {
-        recipeID = new int[3];
-        recipeID[0] = 5;
-        recipeID[1] = 6;
-        recipeID[2] = 7;
+        recipeID.Clear();
+        recipeID.Add(5);
+        recipeID.Add(5);
+        recipeID.Add(6);
+        recipeID.Add(7);
         foodID = 8;
 
         CookedFood();

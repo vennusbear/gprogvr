@@ -54,6 +54,7 @@ public class Egg : Food {
                     eggRigidbody.isKinematic = false;
                     StartCoroutine(DestroyItself());
                 }
+                foodID += 100;
             }
         }
     }

@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class ComplexFood : Food {
 
-    public int[] recipeID = { 1, 2, 3 };
+    public List<int> recipeID = new List<int>();
 
 }

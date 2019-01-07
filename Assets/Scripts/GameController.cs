@@ -45,6 +45,18 @@ public class GameController : MonoBehaviour {
         StartCoroutine(TextFade(welcomeText, 1));
 	}
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Time.timeScale = 3;
+        }
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            Time.timeScale = 1;
+        }
+    }
+
     public void Begin()
     {
         if (currentState == GameState.Start)
@@ -62,11 +74,12 @@ public class GameController : MonoBehaviour {
         switch (level)
         {
             case 1:
-                goalItems.Add(allItems.Where(obj => obj.name == "Pizza").SingleOrDefault());
+                goalItems.Add(allItems.Where(obj => obj.name == "Sandwich").SingleOrDefault());
                 goalItems.Add(allItems.Where(obj => obj.name == "Milk").SingleOrDefault());
-                goalItems.Add(allItems.Where(obj => obj.name == "Steak").SingleOrDefault());
                 break;
             case 2:
+                goalItems.Add(allItems.Where(obj => obj.name == "Pizza").SingleOrDefault());
+                goalItems.Add(allItems.Where(obj => obj.name == "EggToast").SingleOrDefault());
                 break;
             default:
                 break;

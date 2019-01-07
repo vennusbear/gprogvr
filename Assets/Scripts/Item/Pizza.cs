@@ -43,7 +43,7 @@ public class Pizza : Food {
 
     public override IEnumerator CookMicrowave(Transform microwave)
     {
-        StartCoroutine(CookCheck());
+        cookingRoutine = StartCoroutine(CookCheck());
         while (microwave.GetComponent<MicrowaveController>().isCooking)
         {
             cookedTime += Time.deltaTime;

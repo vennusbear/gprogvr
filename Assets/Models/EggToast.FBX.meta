@@ -1,14 +1,39 @@
 fileFormatVersion: 2
-guid: 58c6417b14724194aaad131cb4fa8dfc
+guid: 62e861f735743ba41881b759e1263a77
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
+    100002: ovo
+    100004: pimentao
+    100006: tomate1
+    100008: tomate2
+    100010: torrada
     400000: //RootNode
-    2100000: egg
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: ovo
+    400002: ovo
+    400004: pimentao
+    400006: tomate1
+    400008: tomate2
+    400010: torrada
+    2100000: toast
+    2100002: tomato
+    2100004: egg
+    2100006: pepper
+    2300000: ovo
+    2300002: pimentao
+    2300004: tomate1
+    2300006: tomate2
+    2300008: torrada
+    3300000: ovo
+    3300002: pimentao
+    3300004: tomate1
+    3300006: tomate2
+    3300008: torrada
+    4300000: torrada
+    4300002: tomate1
+    4300004: ovo
+    4300006: pimentao
+    4300008: tomate2
     7400000: Take 001
     9500000: //RootNode
     2186277476908879412: ImportLogs
@@ -43,7 +68,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.7
+    globalScale: 0.15
     meshCompression: 0
     addColliders: 0
     importVisibility: 1
@@ -62,7 +87,7 @@ ModelImporter:
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

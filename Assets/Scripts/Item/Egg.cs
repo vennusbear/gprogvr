@@ -44,7 +44,10 @@ public class Egg : Food {
                 eggObj.isGrabbable = false;
                 if (other.gameObject.CompareTag("Pan"))
                 {
-                    transform.SetParent(other.transform);
+                    eggRigidbody.mass = 0;
+                    eggRigidbody.isKinematic = false;
+                    FixedJoint joint = gameObject.AddComponent<FixedJoint>();
+                    joint.connectedBody = other.gameObject.GetComponent<Rigidbody>();
                 }
                 else
                 {
@@ -78,11 +81,31 @@ public class Egg : Food {
 
     public override IEnumerator CookStove(Transform stove)
     {
-        StartCoroutine(CookCheck());
-        while (stove.GetComponent<StoveController>().isCooking)
+        if (broken)
         {
-            cookedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            cookingRoutine = StartCoroutine(CookCheck());
+            while (stove.GetComponent<StoveController>().isCooking && currentState != Food.FoodState.Burned)
+            {
+                cookedTime += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+        }
+
+        else
+        {
+            cookingRoutine = StartCoroutine(CookCheck());
+            while (stove.GetComponent<StoveController>().isCooking && currentState != Food.FoodState.Burned)
+            {
+                cookedTime += Time.deltaTime;
+
+                if (cookedTime > 5)
+                {
+                    BurnedFood();
+                    break;
+                }
+
+                yield return new WaitForEndOfFrame();
+            }
         }
     }
 

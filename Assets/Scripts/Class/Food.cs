@@ -21,7 +21,7 @@ public class Food : MonoBehaviour {
     protected Color cookedColor = Color.white;
     protected Color burnedColor = new Color32(80, 80, 80, 255);
 
-    Coroutine cookingRoutine;
+    protected Coroutine cookingRoutine;
 
     // Use this for initialization
     protected virtual void Start ()
@@ -74,7 +74,9 @@ public class Food : MonoBehaviour {
             if (cookedTime > 5)
             {
                 BurnedFood();
+                break;
             }
+
             yield return new WaitForEndOfFrame();
         }
     }

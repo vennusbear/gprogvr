@@ -8,10 +8,17 @@ public class ComputerController : MonoBehaviour {
     GameController gameScript;
     public TextMeshProUGUI levelText;
 
-	// Use this for initialization
-	void Start ()
+    #region //Audio 
+    public GameObject speaker;
+    AudioSource audioScript;
+    public AudioClip bgmAudio;
+    #endregion
+
+    // Use this for initialization
+    void Start ()
     {
         gameScript = FindObjectOfType<GameController>().gameObject.GetComponent<GameController>();
+        audioScript = speaker.GetComponent<AudioSource>();
     }
 
     public void ChangeLevel()
@@ -32,5 +39,18 @@ public class ComputerController : MonoBehaviour {
     public void LoadLevel()
     {
         gameScript.ChangeGameScene(0);
+    }
+
+    public void ToggleAudio()
+    {
+        if (audioScript.isPlaying)
+        {
+            audioScript.Pause();
+        }
+
+        else
+        {
+            audioScript.UnPause();
+        }
     }
 }

@@ -21,7 +21,12 @@ public class CombinerController : MonoBehaviour {
 
     public TextMeshProUGUI textComp;
 
+    bool combining;
+
     Coroutine scanningRoutine;
+
+    AudioSource audioScript;
+    public AudioClip[] sound;
 
     [System.Serializable]
     public class FoodRecipe {
@@ -35,7 +40,10 @@ public class CombinerController : MonoBehaviour {
         }
     }
 
-    
+    private void Awake()
+    {
+        audioScript = GetComponent<AudioSource>();
+    }
 
     // Use this for initialization
     void Start ()
@@ -54,6 +62,16 @@ public class CombinerController : MonoBehaviour {
         }
 
 
+    }
+
+    private void Update()
+    {
+        if (combining && !audioScript.isPlaying)
+        {
+            audioScript.loop = true;
+            audioScript.clip = sound[0];
+            audioScript.Play();
+        }
     }
 
     void DoorClosed()
@@ -93,6 +111,7 @@ public class CombinerController : MonoBehaviour {
 
     IEnumerator Combining(FoodRecipe fr)
     {
+        combining = true;
         doorScript.isLocked = true;
         textComp.text = "Combining...";
         yield return new WaitForSeconds(15);
@@ -101,6 +120,9 @@ public class CombinerController : MonoBehaviour {
         spawnee.transform.SetParent(spawnPos);
         textComp.text = fr.foodObject.name;
         DestroyUsedObjects(fr);
+        combining = false;
+        audioScript.loop = false;
+        audioScript.PlayOneShot(sound[1]);
     }
 
     void DestroyUsedObjects(FoodRecipe fr)

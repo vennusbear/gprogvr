@@ -16,10 +16,16 @@ public class FridgeController : MonoBehaviour {
 
     Coroutine checkRoutine;
 
+    #region //Audio 
+    AudioSource audioScript;
+    public AudioClip[] fridgeAudio;
+    #endregion
+
     // Use this for initialization
     IEnumerator Start()
     {
         gameScript = FindObjectOfType<GameController>().gameObject.GetComponent<GameController>();
+        audioScript = GetComponent<AudioSource>();
         fridgeDoor.isLocked = true;
         for (int i = 0; i < dropZoneParent[0].childCount; i++)
         {
@@ -68,5 +74,11 @@ public class FridgeController : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public void PlayAudio(int i)
+    {
+        audioScript.clip = fridgeAudio[i];
+        audioScript.Play();
     }
 }

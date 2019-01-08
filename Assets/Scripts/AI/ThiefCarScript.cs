@@ -12,8 +12,14 @@ public class ThiefCarScript : MonoBehaviour {
 
     public ParticleSystem tireSmoke;
 
-	// Use this for initialization
-	void Start () {
+    AudioSource audioScript;
+    public AudioClip honk;
+    public AudioClip startEngine;
+
+    // Use this for initialization
+    void Start()
+    {
+        audioScript = GetComponent<AudioSource>();
         currentPos = transform.position;
         middlePos = currentPos.x;
         startPos = middlePos - 30;
@@ -24,21 +30,22 @@ public class ThiefCarScript : MonoBehaviour {
         {
             transform.GetChild(0).GetComponent<ParticleSystem>();
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown(KeyCode.E))
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
         {
             StartCoroutine(LerpCar(middlePos));
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             StartCoroutine(LerpCar(endPos));
         }
 
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             transform.position = new Vector3(startPos, currentPos.y, currentPos.z);
         }
@@ -53,6 +60,11 @@ public class ThiefCarScript : MonoBehaviour {
             currentPos = transform.position;
             Vector3 destination = new Vector3(targetX, currentPos.y, currentPos.z);
             tireSmoke.Play();
+            if (transform.position.x == middlePos)
+            {
+                audioScript.PlayOneShot(startEngine);
+            }
+
             while (transform.position.x != destination.x)
             {
                 transform.position = Vector3.Lerp(currentPos, destination, Mathf.SmoothStep(0.0f, 1.0f, t));
@@ -65,6 +77,11 @@ public class ThiefCarScript : MonoBehaviour {
             if (transform.position.x == endPos)
             {
                 transform.position = new Vector3(startPos, currentPos.y, currentPos.z);
+            }
+
+            else if (transform.position.x == middlePos)
+            {
+                audioScript.PlayOneShot(honk);
             }
         }
     }

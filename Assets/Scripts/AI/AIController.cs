@@ -33,6 +33,8 @@ public class AIController : MonoBehaviour
     [SerializeField] List<GameObject> stolenObject = new List<GameObject>();
     #endregion
 
+    Footsteps soundScript;
+
     #region //Animator
     public Animator thiefAnim;
     #endregion
@@ -45,11 +47,17 @@ public class AIController : MonoBehaviour
     GameController gameManager;
     #endregion
 
+    #region //alarm
+    AlarmLight alarmController;
+    #endregion
+
     private void Awake()
     {
         AssignDestinationPoints();
         gameManager = FindObjectOfType<GameController>();
         carScript = FindObjectOfType<ThiefCarScript>();
+        alarmController = FindObjectOfType<AlarmLight>();
+        soundScript = thiefAnim.gameObject.GetComponent<Footsteps>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         headScript = GetComponent<HeadLookController>();
         agent = GetComponent<NavMeshAgent>();
@@ -194,6 +202,7 @@ public class AIController : MonoBehaviour
         agent.speed = 3.5f;
         agent.angularSpeed = 500;
         thiefAnim.SetFloat("Speed_f", agent.speed);
+        alarmController.alarmOn = true;
         while (currentBehaviour == BehaviourState.Run)
         {
             currentTarget = target.transform.position;
@@ -250,7 +259,9 @@ public class AIController : MonoBehaviour
                 yield return null;
             }
 
-            target.transform.parent = transform;
+            target.transform.position = spawnPos.position;
+            target.transform.parent = null;
+            target.transform.SetParent(transform);
             target.SetActive(false);
         }
         agent.SetDestination(escapePoint.position);
@@ -267,8 +278,9 @@ public class AIController : MonoBehaviour
                 yield return null;
             }
 
-            else if (distanceTarget <= agent.stoppingDistance)
+            else if (distanceTarget <= agent.stoppingDistance) //when ai reach last point
             {
+                alarmController.alarmOn = false;
                 if (target != null)
                 {
                     target.SetActive(true);
@@ -287,7 +299,10 @@ public class AIController : MonoBehaviour
                     }
                 }
 
-                StartCoroutine(StartAI());
+                prevPoint = 0;
+                destPoint = 0;
+                GetComponent<Collider>().enabled = true;
+                StartCoroutine(PatrolState());
             }
 
             yield return null;
@@ -371,6 +386,8 @@ public class AIController : MonoBehaviour
 
     IEnumerator DeathState()
     {
+        alarmController.alarmOn = false;
+        soundScript.Death();
         currentBehaviour = BehaviourState.Die;
         GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<Collider>().enabled = false;
@@ -380,9 +397,9 @@ public class AIController : MonoBehaviour
             obj.transform.position = spawnPos.position;
             obj.transform.parent = null;
             obj.GetComponent<Collider>().enabled = true;
-            Rigidbody rb = obj.GetComponent<Rigidbody>();
-            print(rb);
-            rb.AddExplosionForce(3, spawnPos.position, 0.5f, 3f);
+            //Rigidbody rb = obj.GetComponent<Rigidbody>();
+            //print(rb);
+            //rb.AddExplosionForce(3, spawnPos.position, 0.5f, 3f);
         }
         stolenObject.Clear();
         yield return new WaitForSeconds(10);

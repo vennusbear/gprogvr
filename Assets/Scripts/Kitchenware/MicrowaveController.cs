@@ -33,9 +33,15 @@ public class MicrowaveController : MonoBehaviour
 
     public Transform cookingArea;
 
-    // Use this for initialization
-    void Start () {
+    #region //Audio 
+    AudioSource audioScript;
+    public AudioClip[] microwaveAudio;
+    #endregion
 
+    // Use this for initialization
+    void Start ()
+    {
+        audioScript = GetComponent<AudioSource>();
         display = transform.GetChild(0).GetComponent<TextMeshPro>();
         StartCoroutine(Delay(3));
 
@@ -163,9 +169,10 @@ public class MicrowaveController : MonoBehaviour
             microwaveTimer -= 1;
             UpdateTimer();
         }
-
+        StartCoroutine(PlayRepeatedAudio(2, 5, 0.5f));
         display.color = Color.green;
         display.text = "Completed";
+        PlayAudio(3);
         StartCoroutine(DisplayBlink(3, display.text));
         door.GetComponent<VRTK_ArtificialRotator>().isLocked = false;
         isCooking = false;
@@ -234,5 +241,21 @@ public class MicrowaveController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(cookingArea.position, cookingArea.localScale / 2);
+    }
+
+    public void PlayAudio(int i)
+    {
+        audioScript.clip = microwaveAudio[i];
+        audioScript.Play();
+    }
+
+    IEnumerator PlayRepeatedAudio(int i, int repeat, float interval)
+    {
+        audioScript.clip = microwaveAudio[i];
+        for (int a = 0; a < repeat; a++)
+        {
+            audioScript.Play();
+            yield return new WaitForSeconds(interval);
+        }
     }
 }

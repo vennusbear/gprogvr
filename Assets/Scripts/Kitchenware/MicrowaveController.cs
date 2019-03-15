@@ -172,7 +172,7 @@ public class MicrowaveController : MonoBehaviour
         StartCoroutine(PlayRepeatedAudio(2, 5, 0.5f));
         display.color = Color.green;
         display.text = "Completed";
-        PlayAudio(3);
+        PlayAudio(2);
         StartCoroutine(DisplayBlink(3, display.text));
         door.GetComponent<VRTK_ArtificialRotator>().isLocked = false;
         isCooking = false;
